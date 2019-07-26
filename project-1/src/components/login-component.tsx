@@ -26,19 +26,26 @@ export class LoginComponent extends React.Component <any,any> {
     async handleClick(event:any) {
         if(this.state.username&&this.state.password){
             // Send post request to the /Login url
-            let userInfo = await ersApi.post('/Login',{
-                username:this.state.username,
-                password:this.state.password
-            }
+            // Receive the response back
+            let userInfo = await ersApi.post('/Login',
+                {
+                    username:this.state.username,
+                    password:this.state.password
+                }
             );
             // Check response status code
             switch(userInfo.data.status){
-                case 201:
+                case 201: // Login succesful
+                    // Set the user token value 
                     this.setState({token:userInfo.data.info[1].token});
-                    alert(`Welcome, ${userInfo.data.info[0].firstName}`);
+                    alert(`Welcome, ${userInfo.data.info[0].firstName} ${userInfo.data.info[0].lastName}`);
+                    // Take user to menu page
+                    this.props.history.replace("/menu");
                     break;
-                case 400:
+                case 400: // Login failed
                     alert("Invalid credentials");
+                    // Stay in login page
+                    this.props.history.replace("/login");
                     break;
             }
         } else {
@@ -52,9 +59,12 @@ export class LoginComponent extends React.Component <any,any> {
             <div>
                 <MuiThemeProvider>
                     <div>
+                        {/* Title for the login page */}
                         <AppBar
                         title='Login'
                         />
+                        {/* Text fields for username and password with 
+                        onChange listeners */}
                         <TextField
                         floatingLabelText="Username"
                         onChange = {(event,newValue) => 
@@ -68,7 +78,7 @@ export class LoginComponent extends React.Component <any,any> {
                             this.setState({password:newValue})}
                         />
                         <br/>
-
+                        {/* Login button with onClick listener */}
                         <RaisedButton label="Login"
                         primary={true} 
                         onClick={(event) => this.handleClick(event)}/>

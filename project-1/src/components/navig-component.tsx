@@ -1,36 +1,51 @@
-import * as React from 'react';
-import { Link } from 'react-router-dom';
-// import RevLogo from '../assets/rev-logo.png'
+// Style taken from https://reactstrap.github.io/components/navbar/
 
-const NavComponent: React.FC = () => {
+import React from 'react';
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink} from 'reactstrap';
+
+export default class NavigatorMenu extends React.Component <any,any> {
+  constructor(props:any) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      isOpen: false
+    };
+  }
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+  render() {
     return (
-        <div>
-            <nav className="navbar navbar-toggleable-md navbar-expand-lg navbar-light bg-light display-front nav-pad">
-                <div className="navbar-header c-pointer shift-left">
-                    {/* <Link to="/first" className="unset-anchor">
-                        <img className="img-adjust-position rev-logo" alt="revature" />
-                    </Link> */}
-                </div>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarsExample04">
-                    <ul className="navbar-nav ml-auto margin-nav">
-                        <li className="nav-item active">
-                            <Link to="/login"
-                                className="unset-anchor nav-link">Login</Link>
-                        </li>
-                        <li>
-                            <select name="" id="users-options">
-                                <option value="">All Users</option>
-                                <option value="">User by Id</option>
-                            </select> 
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+      <div>
+        <Navbar style={{backgroundColor: 'rgba(90,90,180,0.3)'}} 
+        light expand="md">
+          <NavbarBrand href="/">ERS menu</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className="ml-auto" navbar>
+              <NavItem>
+              <NavLink href="/#/users">Users</NavLink>
+              </NavItem>
+              <NavItem>
+              <NavLink href="/#/reimbursements">Reimbursements</NavLink>
+              </NavItem>
+              <NavItem>
+              <NavLink href="/#/login">Logout</NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
+      </div>
     );
+  }
 }
-
-export default NavComponent;
