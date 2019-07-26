@@ -20,8 +20,8 @@ export class LoginComponent extends React.Component <any,any> {
             token:''
         }
     }
-
-    // Create fetch post request to send the username and 
+    
+    // Create axios post request to send the username and 
     // password for the login
     async handleClick(event:any) {
         if(this.state.username&&this.state.password){
@@ -38,7 +38,14 @@ export class LoginComponent extends React.Component <any,any> {
                 case 201: // Login succesful
                     // Set the user token value 
                     this.setState({token:userInfo.data.info[1].token});
-                    alert(`Welcome, ${userInfo.data.info[0].firstName} ${userInfo.data.info[0].lastName}`);
+                    // Use local storage to store current user information
+                    localStorage.setItem('auth-token',this.state.token);
+                    localStorage.setItem('Role',userInfo.data.info[0].role);
+                    localStorage.setItem('email',userInfo.data.info[0].email);    
+                    localStorage.setItem('username',userInfo.data.info[0].username);
+                    localStorage.setItem('Last name',userInfo.data.info[0].lastName);
+                    localStorage.setItem('First name',userInfo.data.info[0].firstName); 
+                    localStorage.setItem('User ID',`${userInfo.data.info[0].userId}`);                                    
                     // Take user to menu page
                     this.props.history.replace("/menu");
                     break;
@@ -57,6 +64,8 @@ export class LoginComponent extends React.Component <any,any> {
     render () {
         return (
             <div>
+                {/* Clear localStorage for new user */}
+                {localStorage.clear()}
                 <MuiThemeProvider>
                     <div>
                         {/* Title for the login page */}

@@ -29,7 +29,7 @@ export default class NavigatorMenu extends React.Component <any,any> {
       <div>
         <Navbar style={{backgroundColor: 'rgba(90,90,180,0.3)'}} 
         light expand="md">
-          <NavbarBrand href="/">ERS menu</NavbarBrand>
+          <NavbarBrand href="/#/menu">ERS menu</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>

@@ -13,7 +13,17 @@
   color: white;
 }
 
-
 .App-link {
   color: #61dafb;
+}
+
+/* Style of user info */
+#user-info-container {
+  text-align: left;
+  margin: 30px auto;
+}
+
+#user-info-list {
+  border: 1px solid lightslategray;
+  background: rgba(55, 179, 7, 0.3);
 }
