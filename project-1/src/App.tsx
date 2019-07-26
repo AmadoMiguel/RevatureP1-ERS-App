@@ -4,8 +4,9 @@ import './App.css';
 import { HashRouter,Switch,Route, Redirect } from 'react-router-dom';
 import { LoginComponent } from './components/login-component';
 import { MenuComponent } from './components/menu-component';
-import { UsersComponent } from './components/users-components';
+import { UsersMenuComponent } from './components/users-components';
 import { ReimbsComponent } from './components/reimbursements-component';
+import { UserByIdComponent } from './components/userId-component';
 
 const App: React.FC = () => {
   return (
@@ -17,11 +18,13 @@ const App: React.FC = () => {
       <HashRouter>
         <div>
           {/* Default route for the application */}
-          <Redirect from="/#/" to="/menu" />
+          <Redirect from="/#/" to="/main" />
         <Switch>
           <Route path='/login' component = {LoginComponent}/>
-          <Route path='/menu' component = {MenuComponent} />
-          <Route path='/users' component = {UsersComponent} />
+          <Route path='/main' component = {MenuComponent} />
+          <Route path='/users-menu' component = {UsersMenuComponent} />
+          {/* <Route path='/users' component = {UsersComponent} /> */}
+          <Route path='/user' component = {UserByIdComponent} />
           <Route path='/reimbursements' component = {ReimbsComponent} />
         </Switch>
         </div>

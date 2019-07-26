@@ -47,7 +47,7 @@ export class LoginComponent extends React.Component <any,any> {
                     localStorage.setItem('First name',userInfo.data.info[0].firstName); 
                     localStorage.setItem('User ID',`${userInfo.data.info[0].userId}`);                                    
                     // Take user to menu page
-                    this.props.history.replace("/menu");
+                    this.props.history.replace("/main");
                     break;
                 case 400: // Login failed
                     alert("Invalid credentials");
@@ -64,7 +64,8 @@ export class LoginComponent extends React.Component <any,any> {
     render () {
         return (
             <div>
-                {/* Clear localStorage for new user */}
+                {/* Clear localStorage for new user every time the 
+                login component is rendered by the browser */}
                 {localStorage.clear()}
                 <MuiThemeProvider>
                     <div>

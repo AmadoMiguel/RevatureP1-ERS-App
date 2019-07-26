@@ -18,12 +18,13 @@
 }
 
 /* Style of user info */
-#user-info-container {
+.user-info-container {
   text-align: left;
-  margin: 30px auto;
+  margin: 10px auto;
 }
 
 #user-info-list {
-  border: 1px solid lightslategray;
+  border: 1px dashed lightslategray;
+  border-radius: 6px;
   background: rgba(55, 179, 7, 0.3);
 }
