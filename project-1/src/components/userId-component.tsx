@@ -2,11 +2,12 @@ import React from 'react';
 import { PersonComponent } from './person-component';
 import NavigatorMenu from './navig-component';
 import ersApi from '../util/ers-api';
-import { ModifyPersonComponent } from './modify-user-component';
 import { Container, Row, Col } from 'reactstrap';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { TextField } from 'material-ui';
-
+import Axios from 'axios';
+// This component is planned to handle both search and update information to any 
+// particular user
 export class UserByIdComponent extends React.Component <any,any> {
     constructor(props:any) {
         super(props);
@@ -81,19 +82,34 @@ export class UserByIdComponent extends React.Component <any,any> {
         }
     }
 
-    handleUpdateClick() {
-        const config = {
-            headers:
-            {"Authorization":localStorage.getItem('auth-token'),
-             "Content-Type": "application/json"}
-        };
-        // Send patch request to the api in order to update user info
+    async handleUpdateClick() {
+        const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
+        "Content-Type": "application/json"};
         const body = {
-            userId:this.state.userId,
-
+                userId:this.state.userId,
+                firstName:this.state.firstName,
+                lastName:this.state.lastName,
+                username:this.state.username,
+                email:this.state.email,
+                role:this.state.role
+        };
+        // Send the request to update user info
+        const response = await 
+        Axios(
+            {method:"PATCH",
+            url:"http://localhost:3006/Users",
+            headers:reqHeaders,
+            data:body
+            }
+        );
+        // If update is successful redirects to users menu
+        switch(response.status){
+            case 200:
+                alert("Update successful");
+                this.props.history.replace("/users-menu");
+                break;    
         }
     }
-    
     render () {
         return (
                 <div>
@@ -134,10 +150,8 @@ export class UserByIdComponent extends React.Component <any,any> {
                                                         <TextField
                                                             name="first-name"
                                                             style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.9vh"}}
-                                                            onChange={
-                                                                (e:any,newVal)=>this.setState({firstName:newVal})
-                                                            }
+                                                                    height:"4.7vh"}}
+                                                            onChange={(e:any,newVal)=>this.setState({firstName:newVal})}
                                                             placeholder={this.state.firstName}
                                                         />
                                                     </MuiThemeProvider>
@@ -148,16 +162,14 @@ export class UserByIdComponent extends React.Component <any,any> {
                                             <Row>
                                                 <Col><strong>L. Name</strong></Col> 
                                                 <Col xs="8" sm='6' md='6' xl='6'>
-                                                <MuiThemeProvider>
-                                                        <TextField
-                                                            name="last-name"
-                                                            style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.9vh"}}
-                                                            onChange={
-                                                                (e:any,newVal)=>this.setState({lastName:newVal})
-                                                            }
-                                                            placeholder={this.state.lastName}
-                                                        />
+                                                    <MuiThemeProvider>
+                                                            <TextField
+                                                                name="last-name"
+                                                                style={{width:"auto",fontSize:"1.8vh",
+                                                                        height:"4.7vh"}}
+                                                                onChange={(e:any,newVal)=>this.setState({lastName:newVal})}
+                                                                placeholder={this.state.lastName}
+                                                            />
                                                     </MuiThemeProvider>
                                                 </Col>
                                             </Row>
@@ -166,16 +178,14 @@ export class UserByIdComponent extends React.Component <any,any> {
                                             <Row>
                                                 <Col><strong>Username</strong></Col> 
                                                 <Col xs="8" sm='6' md='6' xl='6'>
-                                                <MuiThemeProvider>
-                                                        <TextField
-                                                            name="username"
-                                                            style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.9vh"}}
-                                                            onChange={
-                                                                (e:any,newVal)=>this.setState({username:newVal})
-                                                            }
-                                                            placeholder={this.state.username}
-                                                        />
+                                                    <MuiThemeProvider>
+                                                            <TextField
+                                                                name="username"
+                                                                style={{width:"auto",fontSize:"1.8vh",
+                                                                        height:"4.7vh"}}
+                                                                onChange={(e:any,newVal)=>this.setState({username:newVal})}
+                                                                placeholder={this.state.username}
+                                                            />
                                                     </MuiThemeProvider>
                                                 </Col>
                                             </Row>
@@ -184,16 +194,14 @@ export class UserByIdComponent extends React.Component <any,any> {
                                             <Row>
                                                 <Col><strong>Email</strong></Col> 
                                                 <Col xs="8" sm='6' md='6' xl='6'>
-                                                <MuiThemeProvider>
-                                                        <TextField
-                                                            name="email"
-                                                            style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.9vh"}}
-                                                            onChange={
-                                                                (e:any,newVal)=>this.setState({email:newVal})
-                                                            }
-                                                            placeholder={this.state.email}
-                                                        />
+                                                    <MuiThemeProvider>
+                                                            <TextField
+                                                                name="email"
+                                                                style={{width:"auto",fontSize:"1.8vh",
+                                                                        height:"4.7vh"}}
+                                                                onChange={(e:any,newVal)=>this.setState({email:newVal})}
+                                                                placeholder={this.state.email}
+                                                            />
                                                     </MuiThemeProvider>
                                                 </Col>
                                             </Row>
@@ -202,27 +210,27 @@ export class UserByIdComponent extends React.Component <any,any> {
                                             <Row>
                                                 <Col><strong>Role</strong></Col> 
                                                 <Col xs="8" sm='6' md='6' xl='6'>
-                                                <MuiThemeProvider>
-                                                        <TextField
-                                                            name="role"
-                                                            style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.9vh"}}
-                                                            onChange={
-                                                                (e:any,newVal)=>this.setState({role:newVal})
-                                                            }
-                                                            placeholder={this.state.role}
-                                                        />
+                                                    <MuiThemeProvider>
+                                                            <TextField
+                                                                name="role"
+                                                                style={{width:"auto",fontSize:"1.8vh",
+                                                                        height:"4.7vh"}}
+                                                                onChange={(e:any,newVal)=>this.setState({role:newVal})}
+                                                                placeholder={this.state.role}
+                                                            />
                                                     </MuiThemeProvider>
                                                 </Col>
                                             </Row>
                                         </Container>
                                     </div>
+                                    {/* This button triggers the patch request to the server */}
                                     <button 
                                     id="update-user-button"
                                     onClick={()=>this.handleUpdateClick()}>
                                         Update
                                     </button>
                                 </div>
+                                // If not an admin, only display user info without editable text fields
                                 :
                                 <div>
                                     <PersonComponent 
