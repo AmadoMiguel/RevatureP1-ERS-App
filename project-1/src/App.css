@@ -1,7 +1,7 @@
 .App {
   height: 100vh;
   text-align: center;
-  background: linear-gradient(to bottom,rgba(10,150,200,0.3), rgba(200,90,10,0.3),rgba(10,130,130,0.6));
+  background: linear-gradient(to bottom,rgba(10,150,200,0.3), rgba(230,200,240,0.2),rgba(10,130,130,0.6));
 }
 
 .App-header {
@@ -35,11 +35,11 @@
   border: 1px dashed lightslategray;
   border-radius: 6px;
   text-align: center;
-  margin: 10px auto;
+  margin: 8px auto;
 }
 
 .scrolling-wrapper-flexbox {
-  margin-top: 13vh;
+  margin-top: 11vh;
   display: flex;
   flex-wrap: nowrap;
   overflow-y: auto;
@@ -47,4 +47,24 @@
 
 .user-card {
   flex: 0 0 auto;
+}
+
+#modify-user-info-box {
+  width : auto;
+}
+
+.user-info-input {
+  width: auto;
+  border: 1px solid black;
+}
+
+.person-box {
+  font-size:2.1vh;
+  padding: 0.3px;
+  height: 25vh;
+}
+
+#update-user-button {
+  font-size:2.1vh;
+  width: auto;
 }

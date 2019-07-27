@@ -11,15 +11,19 @@ export interface IPersonProps {
     role:string
 }
 
-export class PersonComponent extends React.Component<IPersonProps,any> {
+export class ModifyPersonComponent extends React.Component<IPersonProps,any> {
     constructor(props:IPersonProps) {
         // Fill in the parent properties with child ones
         super(props);
+        this.state ={
+
+        }
     }
+
     render() {
         return (
-            // Way to display information for each user
-            <div className="person-box-all-users">
+            // Way to display information for each user. 
+            <div className="person-box">
                 <Container>
                     <Row>
                         <Col><strong>User Id</strong></Col> 
@@ -28,32 +32,43 @@ export class PersonComponent extends React.Component<IPersonProps,any> {
                 </Container>
                 <Container>
                     <Row>
-                        <Col><strong>First Name</strong></Col> 
-                        <Col>{this.props.firstName}</Col>
+                        <Col><strong>F. Name</strong></Col> 
+                        <Col xs="8" sm='6' md='6' xl='6'>
+                            <input type="text" className="user-info-input" 
+                            placeholder={this.props.firstName}/> 
+                        </Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row>
-                        <Col><strong>Last Name</strong></Col> 
-                        <Col>{this.props.lastName}</Col>
+                        <Col><strong>L. Name</strong></Col> 
+                        <Col xs="8" sm='6' md='6' xl='6'>
+                            <input type="text" className="user-info-input" placeholder={this.props.lastName}/>
+                        </Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row>
                         <Col><strong>Username</strong></Col> 
-                        <Col>{this.props.username}</Col>
+                        <Col xs="8" sm='6' md='6' xl='6'>
+                            <input type="text" className="user-info-input" placeholder={this.props.username}/>
+                        </Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row>
                         <Col><strong>Email</strong></Col> 
-                        <Col>{this.props.email}</Col>
+                        <Col xs="8" sm='6' md='6' xl='6'>
+                            <input type="text" className="user-info-input" placeholder={this.props.email}/>
+                        </Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row>
                         <Col><strong>Role</strong></Col> 
-                        <Col>{this.props.role}</Col>
+                        <Col xs="8" sm='6' md='6' xl='6'>
+                            <input type="text" className="user-info-input" placeholder={this.props.role}/>
+                        </Col>
                     </Row>
                 </Container>
             </div>

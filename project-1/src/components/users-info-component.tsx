@@ -51,7 +51,7 @@ export class UsersInfoComponent extends React.Component<any,any> {
             return (
             <div key={user.userId} 
             className="user-card user-info-container col-12 col-sm-6 col-md-4 col-lg-6 col-xl-4"
-            id="get-users-info-box"> 
+            id="user-info-list"> 
                 <PersonComponent {...user} /> 
             </div>);
         });

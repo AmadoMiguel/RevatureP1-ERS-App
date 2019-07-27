@@ -19,7 +19,7 @@ const App: React.FC = () => {
       <HashRouter>
         <div>
           {/* Default route for the application */}
-          <Redirect from="/#/" to="/users-menu" />
+          <Redirect from="/#/" to="/user" />
         <Switch>
           <Route path='/login' component = {LoginComponent}/>
           <Route path='/main' component = {MenuComponent} />
