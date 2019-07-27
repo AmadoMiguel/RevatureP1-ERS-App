@@ -27,7 +27,7 @@ export default class NavigatorMenu extends React.Component <any,any> {
   render() {
     return (
       <div>
-        <Navbar style={{backgroundColor: 'rgba(90,90,180,0.3)'}} 
+        <Navbar style={{backgroundColor: 'rgba(90,190,180,0.6)'}} 
         light expand="md">
           <NavbarBrand href="/#/main">Main page</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />

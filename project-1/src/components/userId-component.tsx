@@ -62,7 +62,7 @@ export class UserByIdComponent extends React.Component <any,any> {
                     searchStatus:response.data.status
                 });
                 break;
-            case (403): // Shows the user information
+            case (403): // Unauthorized
                 this.setState({
                     searched:true,
                     searchStatus:response.data.status
@@ -94,6 +94,7 @@ export class UserByIdComponent extends React.Component <any,any> {
                     onChange={(e:any)=>this.handleInputSearch(e)} />
                     <button onClick={()=>this.handleUserSearch()}>Search</button>
                 </div>
+                <br/>
                 {/* Show user info container */}
                 {
                     // Handle properly the different displays according to access

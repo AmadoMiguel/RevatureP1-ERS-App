@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Define the properties of the person component
-interface IPersonProps {
+export interface IPersonProps {
     userId:string,
     firstName:string,
     lastName:string,

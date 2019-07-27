@@ -12,7 +12,7 @@ export class CurrentUserComponent extends React.Component <any,any> {
             // Set responsive display according to size 
             <div className="user-info-container col-9 col-sm-6 col-md-4 col-lg-6 col-xl-3">
                 Your info:
-                <ul id="user-info-list" style={{listStyleType:"none",background:"rgba(100,100,200,0.2)"}}>
+                <ul id="user-info-list" style={{listStyleType:"none",background:'rgba(90,190,180,0.6)'}}>
                     <li key="user-id"><strong>User Id</strong> : {localStorage.getItem("User ID")}</li>
                     <li key="first-name"><strong>First Name</strong> : {localStorage.getItem("First name")}</li>
                     <li key="last-name"><strong>Last Name</strong> : {localStorage.getItem("Last name")}</li>
