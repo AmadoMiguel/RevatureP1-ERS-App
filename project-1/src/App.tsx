@@ -8,6 +8,7 @@ import { UsersMenuComponent } from './components/users-components';
 import { ReimbsComponent } from './components/reimbursements-component';
 import { UserByIdComponent } from './components/userId-component';
 import { UsersInfoComponent } from './components/users-info-component';
+import { ReimbursementsByStatus } from './components/reimbursements-by-status';
 
 const App: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ const App: React.FC = () => {
       <HashRouter>
         <div>
           {/* Default route for the application */}
-          <Redirect from="/#/" to="/user" />
+          <Redirect from="/#/" to="/reimbursements" />
         <Switch>
           <Route path='/login' component = {LoginComponent}/>
           <Route path='/main' component = {MenuComponent} />
@@ -27,6 +28,7 @@ const App: React.FC = () => {
           <Route path='/users' component = {UsersInfoComponent} />
           <Route path='/user' component = {UserByIdComponent} />
           <Route path='/reimbursements' component = {ReimbsComponent} />
+          <Route path='/reimbursement/status' component = {ReimbursementsByStatus} />
         </Switch>
         </div>
       </HashRouter>

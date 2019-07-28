@@ -45,7 +45,7 @@ export class LoginComponent extends React.Component <any,any> {
                     localStorage.setItem('username',userInfo.data.info[0].username);
                     localStorage.setItem('Last name',userInfo.data.info[0].lastName);
                     localStorage.setItem('First name',userInfo.data.info[0].firstName); 
-                    localStorage.setItem('User ID',`${userInfo.data.info[0].userId}`);                                    
+                    localStorage.setItem('User ID',userInfo.data.info[0].userId);                                    
                     // Take user to menu page
                     this.props.history.replace("/main");
                     break;

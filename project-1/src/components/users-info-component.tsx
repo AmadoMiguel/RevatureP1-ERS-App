@@ -20,6 +20,7 @@ export class UsersInfoComponent extends React.Component<any,any> {
             {"Authorization":localStorage.getItem('auth-token'),
              "Content-Type": "application/json"}
         };
+        // Variable that stores the response from the user
         let allUsersInfo = await ersApi.get('/Users',config);
         // Handle the received status
         switch(allUsersInfo.data.status){
@@ -33,7 +34,7 @@ export class UsersInfoComponent extends React.Component<any,any> {
                 // array
                 this.setState({
                     ...this.state,
-                    users:allUsersInfo.data.info.sort()
+                    users:allUsersInfo.data.info
                 });
                 break;
             case(403):

@@ -68,3 +68,10 @@
   font-size:2.1vh;
   width: auto;
 }
+
+#search-reimbursements-box {
+  border:1px solid black;
+  border-radius: 2px;
+  margin:10px auto;
+  
+}
