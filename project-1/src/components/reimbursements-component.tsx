@@ -1,6 +1,7 @@
 import * as React from 'react';
 import NavigatorMenu from './navig-component';
 import { Link } from 'react-router-dom';
+import { Button } from 'reactstrap';
 
 export class ReimbsComponent extends React.Component {
     render () {
@@ -18,8 +19,11 @@ export class ReimbsComponent extends React.Component {
                     <br/>
                     or
                     <br/>
-                    <Link to='/author' >By author</Link>
+                    <Link to='reimbursement/author' >By author</Link>
                 </div>
+                {/* Button for changing to create new reimbursement mode */}
+                <br/>
+                <Button>Create new reimbursement</Button>
             </div>
         );
     }

@@ -1,23 +1,23 @@
 import * as React from 'react';
 import NavigatorMenu from './navig-component';
-import { DropDownMenu, MenuItem } from 'material-ui';
-import { MuiThemeProvider } from 'material-ui/styles';
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col, Input } from 'reactstrap';
 import ersApi from '../util/ers-api';
 
-
-export class ReimbursementsByStatus extends React.Component <any,any> {
+export class ReimbursementsByAuthor extends React.Component <any,any> {
     constructor(props:any) {
         super(props);
         this.state={
             reimbursements:[],
-            selectorValue:1,
-            authorization:0
+            inputValue:1,
+            authorization:0,
+            searching:true
         }
     }
-    handleStatusSelector(v:any) {
+    handleInputChange(e:any) {
+        const val = e.target.value;
         this.setState({
-            selectorValue:v
+            inputValue:val,
+            searching:true
         });
     }
     async getReimbursements() {
@@ -30,19 +30,21 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
         };
         // Variable that stores the response from the user
         let foundReimbursements = await ersApi.get(
-        `/Reimbursements/status/${this.state.selectorValue}`
+        `/Reimbursements/author/${this.state.inputValue}`
         ,config);
         switch(foundReimbursements.data.status){
             case 404: // Not found
                 alert("No found reimbursements");
                 this.setState({
-                    authorization:foundReimbursements.data.status
+                    authorization:foundReimbursements.data.status,
+                    searching:true
                 });
                 break;
             case 200: // Reimbursements found
                 this.setState({
                     authorization:foundReimbursements.data.status,
-                    reimbursements:foundReimbursements.data.info
+                    reimbursements:foundReimbursements.data.info,
+                    searching:false
                 });
                 break;
             case 403:
@@ -65,26 +67,20 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <h3>Search reimbursement by status: </h3>
+                <h3>Search reimbursement by author ID: </h3>
                 <hr className="col-8"/>
                 <Container>
                     <Row style={{textAlign:"center"}}>
                         <Col></Col>
                         <Col></Col>
-                        <Col xs="5" sm='4' md='4' xl='4'>
-                            <MuiThemeProvider>
-                                <DropDownMenu
-                                value={this.state.selectorValue}
-                                onChange={(e,i,v)=>this.handleStatusSelector(v)}
-                                style={{background:'lightgray'}}>
-                                    <MenuItem value={1} primaryText="Pending" />
-                                    <MenuItem value={2} primaryText="Approved" />
-                                    <MenuItem value={3} primaryText="Denied" />
-                                </DropDownMenu>
-                            </MuiThemeProvider>
+                        <Col></Col>
+                        <Col xs="3" sm='3' md='3' xl='2'>
+                            <Input 
+                            placeholder="ID"
+                            onChange={(e:any)=>this.handleInputChange(e)}
+                            />
                         </Col>
                         {/* This button triggers the get request for the reimbursements */}
-                        {/*  */}
                         <Col>
                             <Button onClick={()=>this.getReimbursements()}>
                                 Search
@@ -93,11 +89,13 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                         <Col></Col>
                         <Col></Col>
                         <Col></Col>
-                        <Col></Col>
                     </Row>
+                    <br/>
                 </Container>
-                {/* Display reimbursements as a table using bootstrap columns */}
-                <Container className="reimbursements-table">
+                {
+                    (this.state.searching) || 
+                    // Show the table when user is not searching
+                    <Container className="reimbursements-table">
                     {/* First the headers */}
                     <Row>
                         <Col>Id</Col>
@@ -114,7 +112,7 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                     {/* All reimbursements are contained in reimbsAsRows */}
                     {reimbsAsRows}
                 </Container>
-                
+                }
             </div>
         );
     }
