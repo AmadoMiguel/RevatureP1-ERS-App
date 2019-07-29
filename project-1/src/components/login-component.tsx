@@ -7,6 +7,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import ersApi from '../util/ers-api';
+import { Route } from 'react-router';
+import { MenuComponent } from './menu-component';
+import { PleaseLoginComponent } from './please-login-component';
 
 // import { Redirect } from 'react-router-dom';
 // import { Link } from 'react-router-dom';

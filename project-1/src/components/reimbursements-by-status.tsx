@@ -4,7 +4,11 @@ import { DropDownMenu, MenuItem } from 'material-ui';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Button, Container, Row, Col } from 'reactstrap';
 import ersApi from '../util/ers-api';
+import Axios from 'axios';
 
+// In this component both get reimbursements by status and modifying
+// reimbursements (either approving them or denying them) which status 
+// is pending, is handled
 export class ReimbursementsByStatus extends React.Component <any,any> {
     constructor(props:any) {
         super(props);
@@ -53,13 +57,62 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                 break;
         }
     }
+    // This function will only be called if the reimbursement status is selected to
+    // pending. The current user, if authorized, can select between aproving it and
+    // denying it using a button on the status column.
+    async solvePendingReimbursement(reimId:any,status:any){
+        const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
+        "Content-Type": "application/json"};
+        const body = {
+            reimbursementId:parseInt(reimId),
+            dateResolved: new Date().toISOString().slice(0,10),
+            description:"Resolved",
+            status: status
+        };
+        // Send the request to update user info
+        const response = await 
+        Axios(
+            {method:"PATCH",
+            url:"http://localhost:3006/Reimbursements",
+            headers:reqHeaders,
+            data:body
+            }
+        );
+        switch(response.data.status) {
+            case 201:
+                alert(`Reimbursement number ${body.reimbursementId} succesfully ${(body.status===2)?"Approved":"Denied"}`);
+                this.props.history.replace("/reimbursements");
+                break;
+        }
+    }
     render () {
         // Map each found reimbursement to a <Row> element, and assign each
         // reimbursement property (its values) to a <Col> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
-                <Row key={reimb.id}>
-                    {Object.values(reimb).map((prop:any)=>(<Col>{prop}</Col>))}
+                <Row key={reimb.id} className="reimbursements-by-stat-row">
+                    {
+                        Object.keys(reimb).map((key:any)=>
+                            (
+                                ((reimb.status==="Pending")&&(key==="status"))?
+                                <Col> 
+                                    <Button 
+                                    style={{background:"green"}}
+                                    className="approve-deny-button"
+                                    onClick={()=>this.solvePendingReimbursement(reimb.id,2)}
+                                    >
+                                        A</Button> 
+                                    <Button 
+                                    style={{background:"red"}}
+                                    className="approve-deny-button"
+                                    onClick={()=>this.solvePendingReimbursement(reimb.id,3)}>
+                                        D</Button> 
+                                </Col>
+                                :
+                                <Col>{reimb[key]}</Col>
+                            )
+                        )
+                    }
                 </Row>
             )
         });
@@ -77,7 +130,7 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                                 <DropDownMenu
                                 value={this.state.selectorValue}
                                 onChange={(e,i,v)=>this.handleStatusSelector(v)}
-                                style={{background:'lightgray'}}>
+                                style={{background:'rgba(90,190,180,0.5)'}}>
                                     <MenuItem value={1} primaryText="Pending" />
                                     <MenuItem value={2} primaryText="Approved" />
                                     <MenuItem value={3} primaryText="Denied" />
@@ -109,7 +162,7 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                             <Col>Submitted on</Col>
                             <Col>Resolved on</Col>
                             <Col>Description</Col>
-                            <Col>resolver</Col>
+                            <Col>Resolver</Col>
                             <Col>Status</Col>
                             <Col>Type</Col>
                         </Row>

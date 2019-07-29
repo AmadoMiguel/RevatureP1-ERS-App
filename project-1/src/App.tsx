@@ -21,23 +21,22 @@ const App: React.FC = () => {
       {/* Add the navigator */}
       <HashRouter>
         <div>
-          {/* Default route for the application */}
-          <Redirect from="/#/" to="/reimbursement/create" />
-        <Switch>
-          <Route path='/login' component = {LoginComponent}/>
-          <Route path='/main' component = {MenuComponent} />
-          <Route path='/users-menu' component = {UsersMenuComponent} />
-          <Route path='/users' component = {UsersInfoComponent} />
-          <Route path='/user' component = {UserByIdComponent} />
-          <Route path='/reimbursements' component = {ReimbsComponent} />
-          <Route path='/reimbursement/status' component = {ReimbursementsByStatus} />
-          <Route path='/reimbursement/author' component = {ReimbursementsByAuthor} />
-          <Route path='/reimbursement/create' component = {NewReimbursementComponent} />
-        </Switch>
+          {/* Default route for the application is login */}
+          <Redirect from="/#/" to="/reimbursements/status" />
+          <Switch>
+            <Route path='/login' component = {LoginComponent}/>
+            <Route path='/main' component =  {MenuComponent} />
+            <Route path='/users-menu/user' component = {UserByIdComponent} />
+            <Route path='/users-menu/users' component = {UsersInfoComponent} />
+            <Route path='/users-menu' component = {UsersMenuComponent} />
+            <Route path='/reimbursements/create' component = {NewReimbursementComponent} />
+            <Route path='/reimbursements/status' component = {ReimbursementsByStatus} />
+            <Route path='/reimbursements/author' component = {ReimbursementsByAuthor} />
+            <Route path='/reimbursements' component = {ReimbsComponent} />
+          </Switch>
         </div>
       </HashRouter>
     </div>
   );
 }
-
 export default App;
