@@ -49,7 +49,8 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                 break;
             case 403:
                 this.setState({
-                    authorization:foundReimbursements.data.status
+                    authorization:foundReimbursements.data.status,
+                    searching:false
                 });  
                 break;
         }
@@ -93,7 +94,8 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                     <br/>
                 </Container>
                 {
-                    (this.state.searching) || 
+                    (!this.state.searching) ? 
+                    (!(this.state.authorization === 403))?
                     // Show the table when user is not searching
                     <Container className="reimbursements-table">
                     {/* First the headers */}
@@ -112,6 +114,10 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                     {/* All reimbursements are contained in reimbsAsRows */}
                     {reimbsAsRows}
                 </Container>
+                :
+                <div>You are not authorized</div>
+                :
+                <div></div>
                 }
             </div>
         );
