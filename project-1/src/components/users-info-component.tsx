@@ -66,9 +66,16 @@ export class UsersInfoComponent extends React.Component<any,any> {
                     Search
                 </button>
                 <br/>
-                <div className="scrolling-wrapper-flexbox">
-                    {usersComponents}
-                </div>
+                {
+                    (this.state.reqStatus===403)
+                    ?
+                    <div>You are not authorized to this information</div>
+                    :
+                    <div className="scrolling-wrapper-flexbox">
+                        {usersComponents}
+                    </div>
+                }
+                
             </div>
         );
     }

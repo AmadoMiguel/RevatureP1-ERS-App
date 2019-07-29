@@ -10,6 +10,7 @@ import { UserByIdComponent } from './components/userId-component';
 import { UsersInfoComponent } from './components/users-info-component';
 import { ReimbursementsByStatus } from './components/reimbursements-by-status';
 import { ReimbursementsByAuthor } from './components/reimbursements-by-author';
+import { NewReimbursementComponent } from './components/create-reimbursement-component';
 
 const App: React.FC = () => {
   return (
@@ -21,7 +22,7 @@ const App: React.FC = () => {
       <HashRouter>
         <div>
           {/* Default route for the application */}
-          <Redirect from="/#/" to="/reimbursements" />
+          <Redirect from="/#/" to="/reimbursement/create" />
         <Switch>
           <Route path='/login' component = {LoginComponent}/>
           <Route path='/main' component = {MenuComponent} />
@@ -31,6 +32,7 @@ const App: React.FC = () => {
           <Route path='/reimbursements' component = {ReimbsComponent} />
           <Route path='/reimbursement/status' component = {ReimbursementsByStatus} />
           <Route path='/reimbursement/author' component = {ReimbursementsByAuthor} />
+          <Route path='/reimbursement/create' component = {NewReimbursementComponent} />
         </Switch>
         </div>
       </HashRouter>

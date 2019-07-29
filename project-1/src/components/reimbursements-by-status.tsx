@@ -36,7 +36,8 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
             case 404: // Not found
                 alert("No found reimbursements");
                 this.setState({
-                    authorization:foundReimbursements.data.status
+                    authorization:foundReimbursements.data.status,
+                    reimbursements:[]
                 });
                 break;
             case 200: // Reimbursements found
@@ -47,7 +48,8 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                 break;
             case 403:
                 this.setState({
-                    authorization:foundReimbursements.data.status
+                    authorization:foundReimbursements.data.status,
+                    reimbursements:[0]
                 });  
                 break;
         }
@@ -96,24 +98,30 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                         <Col></Col>
                     </Row>
                 </Container>
-                {/* Display reimbursements as a table using bootstrap columns */}
-                <Container className="reimbursements-table">
-                    {/* First the headers */}
-                    <Row>
-                        <Col>Id</Col>
-                        <Col>Author</Col>
-                        <Col>Amount (usd)</Col>
-                        <Col>Submitted on</Col>
-                        <Col>Resolved on</Col>
-                        <Col>Description</Col>
-                        <Col>resolver</Col>
-                        <Col>Status</Col>
-                        <Col>Type</Col>
-                    </Row>
-                    <hr/>
-                    {/* All reimbursements are contained in reimbsAsRows */}
-                    {reimbsAsRows}
-                </Container>
+                {
+                    (this.state.reimbursements.length)?
+                    (!(this.state.authorization === 403))?
+                        <Container className="reimbursements-table">
+                        {/* First the headers */}
+                        <Row>
+                            <Col>Id</Col>
+                            <Col>Author</Col>
+                            <Col>Amount (usd)</Col>
+                            <Col>Submitted on</Col>
+                            <Col>Resolved on</Col>
+                            <Col>Description</Col>
+                            <Col>resolver</Col>
+                            <Col>Status</Col>
+                            <Col>Type</Col>
+                        </Row>
+                        <hr/>
+                        {/* All reimbursements are contained in reimbsAsRows */}
+                        {reimbsAsRows}
+                        </Container>:
+                        <div>You are not authorized</div>
+                        :
+                        <div></div>
+                }
                 
             </div>
         );

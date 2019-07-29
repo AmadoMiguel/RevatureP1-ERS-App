@@ -59,13 +59,13 @@
 }
 
 .person-box {
-  font-size:2.1vh;
-  padding: 0.3px;
-  height: 25vh;
+  font-size:2.5vh;
+  padding: 1.9px;
+  height: 35vh;
 }
 
 #update-user-button {
-  font-size:2.1vh;
+  font-size:2.5vh;
   width: auto;
 }
 

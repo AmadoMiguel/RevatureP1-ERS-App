@@ -11,7 +11,7 @@ export class CurrentUserComponent extends React.Component <any,any> {
         return (
             // Define container for person information
             // Set responsive display according to size 
-            <div className="user-info-container col-9 col-sm-6 col-md-4 col-lg-6 col-xl-3"
+            <div className="user-info-container col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4"
             id="user-info-list" style={{listStyleType:"none",background:'rgba(90,190,180,0.6)'}}>
                 Your info:
                 <Container>

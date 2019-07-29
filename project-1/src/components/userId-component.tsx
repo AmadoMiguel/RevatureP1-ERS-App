@@ -114,7 +114,6 @@ export class UserByIdComponent extends React.Component <any,any> {
         return (
                 <div>
                     <NavigatorMenu />
-                    <br/>
                     {/* Search user container */}
                     <div>
                         <h3>Search user by Id: </h3>
@@ -149,8 +148,8 @@ export class UserByIdComponent extends React.Component <any,any> {
                                                     <MuiThemeProvider>
                                                         <TextField
                                                             name="first-name"
-                                                            style={{width:"auto",fontSize:"1.8vh",
-                                                                    height:"4.7vh"}}
+                                                            style={{width:"auto",fontSize:"2.5vh",
+                                                                    height:"5.7vh"}}
                                                             onChange={(e:any,newVal)=>this.setState({firstName:newVal})}
                                                             placeholder={this.state.firstName}
                                                         />
@@ -165,8 +164,8 @@ export class UserByIdComponent extends React.Component <any,any> {
                                                     <MuiThemeProvider>
                                                             <TextField
                                                                 name="last-name"
-                                                                style={{width:"auto",fontSize:"1.8vh",
-                                                                        height:"4.7vh"}}
+                                                                style={{width:"auto",fontSize:"2.5vh",
+                                                                        height:"5.7vh"}}
                                                                 onChange={(e:any,newVal)=>this.setState({lastName:newVal})}
                                                                 placeholder={this.state.lastName}
                                                             />
@@ -176,13 +175,13 @@ export class UserByIdComponent extends React.Component <any,any> {
                                         </Container>
                                         <Container>
                                             <Row>
-                                                <Col><strong>Username</strong></Col> 
+                                                <Col><strong>User</strong></Col> 
                                                 <Col xs="8" sm='6' md='6' xl='6'>
                                                     <MuiThemeProvider>
                                                             <TextField
                                                                 name="username"
-                                                                style={{width:"auto",fontSize:"1.8vh",
-                                                                        height:"4.7vh"}}
+                                                                style={{width:"auto",fontSize:"2.5vh",
+                                                                        height:"5.7vh"}}
                                                                 onChange={(e:any,newVal)=>this.setState({username:newVal})}
                                                                 placeholder={this.state.username}
                                                             />
@@ -197,8 +196,8 @@ export class UserByIdComponent extends React.Component <any,any> {
                                                     <MuiThemeProvider>
                                                             <TextField
                                                                 name="email"
-                                                                style={{width:"auto",fontSize:"1.8vh",
-                                                                        height:"4.7vh"}}
+                                                                style={{width:"auto",fontSize:"2.5vh",
+                                                                        height:"5.7vh"}}
                                                                 onChange={(e:any,newVal)=>this.setState({email:newVal})}
                                                                 placeholder={this.state.email}
                                                             />
@@ -213,8 +212,8 @@ export class UserByIdComponent extends React.Component <any,any> {
                                                     <MuiThemeProvider>
                                                             <TextField
                                                                 name="role"
-                                                                style={{width:"auto",fontSize:"1.8vh",
-                                                                        height:"4.7vh"}}
+                                                                style={{width:"auto",fontSize:"2.5vh",
+                                                                        height:"5.7vh"}}
                                                                 onChange={(e:any,newVal)=>this.setState({role:newVal})}
                                                                 placeholder={this.state.role}
                                                             />

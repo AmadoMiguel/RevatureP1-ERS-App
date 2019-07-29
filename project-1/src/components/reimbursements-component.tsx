@@ -3,7 +3,12 @@ import NavigatorMenu from './navig-component';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
-export class ReimbsComponent extends React.Component {
+export class ReimbsComponent extends React.Component <any,any> {
+
+    goToCreateReimbursement() {
+        this.props.history.replace("/reimbursement/create");
+    }
+
     render () {
         return (
             <div>
@@ -12,7 +17,7 @@ export class ReimbsComponent extends React.Component {
                 <br/>
                 <div 
                 id="search-reimbursements-box"
-                className="col-10 col-sm-12 col-md-12 col-lg-8 col-xl-4">
+                className="col-10 col-sm-12 col-md-5 col-lg-8 col-xl-4">
                     <h5>Search reimbursements</h5>
                     <hr/>
                     <Link to='reimbursement/status' >By status</Link>
@@ -23,7 +28,7 @@ export class ReimbsComponent extends React.Component {
                 </div>
                 {/* Button for changing to create new reimbursement mode */}
                 <br/>
-                <Button>Create new reimbursement</Button>
+                <Button onClick={()=>this.goToCreateReimbursement()}>Create new reimbursement</Button>
             </div>
         );
     }
