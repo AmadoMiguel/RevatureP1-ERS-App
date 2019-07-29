@@ -5,7 +5,6 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { Button, Container, Row, Col } from 'reactstrap';
 import ersApi from '../util/ers-api';
 
-
 export class ReimbursementsByStatus extends React.Component <any,any> {
     constructor(props:any) {
         super(props);
@@ -122,7 +121,6 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                         :
                         <div></div>
                 }
-                
             </div>
         );
     }

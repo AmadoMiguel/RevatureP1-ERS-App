@@ -12,13 +12,14 @@ export class NewReimbursementComponent extends React.Component <any,any> {
             reimbType:1,
             amount:0,
             description:'',
-            dateSubmitted:''
+            dateSubmitted:'',
+            authStatus:0
         }
     }
     handleAmountChange(e:any){
         const amount = e.target.value;
         this.setState({
-            amount:parseInt(amount)
+            amount:parseFloat(amount)
         })
     }
     handleDescriptionChange(e:any) {
@@ -53,14 +54,25 @@ export class NewReimbursementComponent extends React.Component <any,any> {
         // Send the request to update user info
         const response = await 
         Axios(
-            {method:"PATCH",
+            {method:"POST",
             url:"http://localhost:3006/Reimbursements",
             headers:reqHeaders,
             data:body
             }
         );
         // Handle response status
-        
+        switch(response.data.status){
+            case 406: // Not acceptable information provided
+                alert("Could not create. Please verify information.");
+                break;
+            case 201:    
+                alert("Succesfully created.");
+                this.props.history.replace("/reimbursements");
+                break;
+            case 403:
+                this.setState({authStatus:response.data.status});
+                break;
+        }
     }
 
     render () {
@@ -110,9 +122,17 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                     </Row>
                 </Container>
                 <br/>
-                <Button>
+                <Button
+                onClick={()=>this.createNewReimbursement()}>
                     Create
                 </Button>
+                {/* In case user is not authorized */}
+                {
+                    (this.state.authStatus) &&
+                    (this.state.authStatus===403)?
+                    <div>You are not authorized</div>:
+                    <div></div>
+                }
             </div>
         );
     }
