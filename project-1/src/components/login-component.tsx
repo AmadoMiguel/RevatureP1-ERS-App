@@ -74,6 +74,7 @@ export class LoginComponent extends React.Component <any,any> {
                     <div>
                         {/* Title for the login page */}
                         <AppBar
+                        style={{ background: '#2E3B55' }}
                         title='Login'
                         />
                         {/* Text fields for username and password with 

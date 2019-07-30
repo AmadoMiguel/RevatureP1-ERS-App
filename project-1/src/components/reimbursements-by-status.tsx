@@ -80,7 +80,7 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
         );
         switch(response.data.status) {
             case 201:
-                alert(`Reimbursement number ${body.reimbursementId} succesfully ${(body.status===2)?"Approved":"Denied"}`);
+                alert(`Reimbursement number ${body.reimbursementId} succesfully ${(body.status===2)?"approved":"denied"}`);
                 this.props.history.replace("/reimbursements");
                 break;
         }
@@ -88,38 +88,41 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
     render () {
         // Map each found reimbursement to a <Row> element, and assign each
         // reimbursement property (its values) to a <Col> element.
+        var nReimbs = 0;
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
-                <Row key={reimb.id} className="reimbursements-by-stat-row">
+                
+                <tr id={`denied-reimb-${nReimbs++}`} key={reimb.id} className="table-info">
                     {
+                        
                         Object.keys(reimb).map((key:any)=>
                             (
                                 ((reimb.status==="Pending")&&(key==="status"))?
-                                <Col> 
-                                    <Button 
+                                <td> 
+                                    <Button
                                     style={{background:"green"}}
                                     className="approve-deny-button"
-                                    onClick={()=>this.solvePendingReimbursement(reimb.id,2)}
-                                    >
+                                    onClick={()=>this.solvePendingReimbursement(reimb.id,2)}>
                                         A</Button> 
-                                    <Button 
+                                    <Button
                                     style={{background:"red"}}
                                     className="approve-deny-button"
                                     onClick={()=>this.solvePendingReimbursement(reimb.id,3)}>
                                         D</Button> 
-                                </Col>
+                                </td>
                                 :
-                                <Col>{reimb[key]}</Col>
+                                <td>{reimb[key]}</td>
                             )
                         )
                     }
-                </Row>
+                </tr>
             )
         });
         return (
             <div>
                 <NavigatorMenu />
                 <h3>Search reimbursement by status: </h3>
+                <h6>(hint: pending reimbursements can be resolved)</h6>
                 <hr className="col-8"/>
                 <Container>
                     <Row style={{textAlign:"center"}}>
@@ -153,25 +156,32 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
                 {
                     (this.state.reimbursements.length)?
                     (!(this.state.authorization === 403))?
-                        <Container className="reimbursements-table">
-                        {/* First the headers */}
-                        <Row>
-                            <Col>Id</Col>
-                            <Col>Author</Col>
-                            <Col>Amount (usd)</Col>
-                            <Col>Submitted on</Col>
-                            <Col>Resolved on</Col>
-                            <Col>Description</Col>
-                            <Col>Resolver</Col>
-                            <Col>Status</Col>
-                            <Col>Type</Col>
-                        </Row>
-                        <hr/>
-                        {/* All reimbursements are contained in reimbsAsRows */}
-                        {reimbsAsRows}
-                        </Container>:
-                        <div>You are not authorized</div>
+                        // Reimbursements table 
+                        <div className="table-responsive reimb-table-container">
+                            <table className="table ">
+                            {/* First the headers */}
+                            <thead>
+                                <tr>
+                                    <th scope='row'>Id</th>
+                                    <th scope='row'>Author</th>
+                                    <th scope='row'>Amount (usd)</th>
+                                    <th scope='row'>Submitted on</th>
+                                    <th scope='row'>Resolved on</th>
+                                    <th scope='row'>Description</th>
+                                    <th scope='row'>Resolver</th>
+                                    <th scope='row'>Status</th>
+                                    <th scope='row'>Type</th>
+                                </tr>
+                            </thead>
+                            {/* All reimbursements are contained in reimbsAsRows */}
+                            <tbody>
+                                {reimbsAsRows}
+                            </tbody>
+                            </table>
+                        </div>
                         :
+                        <div>You are not authorized</div>
+                    :
                         <div></div>
                 }
             </div>

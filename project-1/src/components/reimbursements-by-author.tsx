@@ -60,9 +60,9 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
         // reimbursement property (its values) to a <Col> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
-                <Row key={reimb.id}>
-                    {Object.values(reimb).map((prop:any)=>(<Col>{prop}</Col>))}
-                </Row>
+                <tr key={reimb.id} className="table-info">
+                    {Object.values(reimb).map((prop:any)=>(<td>{prop}</td>))}
+                </tr>
             )
         });
         return (
@@ -97,23 +97,28 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                     (!this.state.searching) ? 
                     (!(this.state.authorization === 403))?
                     // Show the table when user is not searching
-                    <Container className="reimbursements-table">
+                    <div className="table-responsive reimb-table-container">
+                    <table className="table ">
                     {/* First the headers */}
-                    <Row>
-                        <Col>Id</Col>
-                        <Col>Author</Col>
-                        <Col>Amount (usd)</Col>
-                        <Col>Submitted on</Col>
-                        <Col>Resolved on</Col>
-                        <Col>Description</Col>
-                        <Col>resolver</Col>
-                        <Col>Status</Col>
-                        <Col>Type</Col>
-                    </Row>
-                    <hr/>
+                    <thead>
+                        <tr>
+                            <th scope='row'>Id</th>
+                            <th scope='row'>Author</th>
+                            <th scope='row'>Amount (usd)</th>
+                            <th scope='row'>Submitted on</th>
+                            <th scope='row'>Resolved on</th>
+                            <th scope='row'>Description</th>
+                            <th scope='row'>Resolver</th>
+                            <th scope='row'>Status</th>
+                            <th scope='row'>Type</th>
+                        </tr>
+                    </thead>
                     {/* All reimbursements are contained in reimbsAsRows */}
-                    {reimbsAsRows}
-                </Container>
+                    <tbody>
+                        {reimbsAsRows}
+                    </tbody>
+                    </table>
+                </div>
                 :
                 <div>You are not authorized</div>
                 :
