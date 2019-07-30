@@ -45,6 +45,7 @@ export class NewReimbursementComponent extends React.Component <any,any> {
     async createNewReimbursement() {
         const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
         "Content-Type": "application/json"};
+        
         const body = {
                 amount:this.state.amount,
                 description:this.state.description,

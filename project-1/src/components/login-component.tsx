@@ -7,9 +7,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import ersApi from '../util/ers-api';
-import { Route } from 'react-router';
-import { MenuComponent } from './menu-component';
-import { PleaseLoginComponent } from './please-login-component';
 
 // import { Redirect } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
@@ -23,10 +20,10 @@ export class LoginComponent extends React.Component <any,any> {
             token:''
         }
     }
-    
+
     // Create axios post request to send the username and 
     // password for the login
-    async handleClick(event:any) {
+    async handleClick() {
         if(this.state.username&&this.state.password){
             // Send post request to the /Login url
             // Receive the response back
@@ -77,25 +74,32 @@ export class LoginComponent extends React.Component <any,any> {
                         style={{ background: '#2E3B55' }}
                         title='Login'
                         />
+                        
                         {/* Text fields for username and password with 
                         onChange listeners */}
                         <TextField
+                        inputStyle={{background:"rgba(2,130,20,0.2)",
+                        color:"black"}}
                         floatingLabelText="Username"
+                        floatingLabelStyle={{color:"white"}}
                         onChange = {(event,newValue) => 
                             this.setState({username:newValue})}
                         />
-                        <br/>
+                        <br/><br/>
                         <TextField
+                        inputStyle={{background:"rgba(2,130,20,0.2)",
+                        color:"black"}}
                         type="password"
                         floatingLabelText="Password"
+                        floatingLabelStyle={{color:"white"}}
                         onChange = {(event,newValue) => 
                             this.setState({password:newValue})}
                         />
-                        <br/>
+                        <br/><br/>
                         {/* Login button with onClick listener */}
                         <RaisedButton label="Login"
                         primary={true} 
-                        onClick={(event) => this.handleClick(event)}/>
+                        onClick={() => this.handleClick()}/>
                     </div>
                 </MuiThemeProvider>
             </div>
