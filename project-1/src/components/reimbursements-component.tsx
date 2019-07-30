@@ -24,11 +24,22 @@ export class ReimbsComponent extends React.Component <any,any> {
                         className="col-10 col-sm-12 col-md-5 col-lg-8 col-xl-4">
                             <h5>Search reimbursements</h5>
                             <hr/>
-                            <Link to='reimbursements/status' >By status</Link>
-                            <br/>
-                            or
-                            <br/>
-                            <Link to='reimbursements/author' >By author</Link>
+                            {
+                                (localStorage.getItem("Role")==="Regular employee")?
+                                <div>
+                                    <Link to="reimbursements/my-reimbursements" >
+                                        My reimbursements
+                                    </Link>
+                                </div>
+                                :
+                                <div>
+                                    <Link to='reimbursements/status' >By status</Link>
+                                    <br/>
+                                    or
+                                    <br/>
+                                    <Link to='reimbursements/author' >By author</Link>
+                                </div>
+                            }
                         </div>
                         {/* Button for changing to create new reimbursement mode */}
                         <br/>

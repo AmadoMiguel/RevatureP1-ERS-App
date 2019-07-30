@@ -121,7 +121,11 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
             <div>
                 <NavigatorMenu />
                 <h3>Search reimbursement by status: </h3>
-                <h6>(hint: pending reimbursements can be resolved)</h6>
+                {/* Display this only for authorized roles */}
+                {(localStorage.getItem("Role")==="admin"||localStorage.getItem("Role")==="finance"||
+                localStorage.getItem("Role")==="manager")&&
+                    <h6>(hint: pending reimbursements can be resolved)</h6>
+                }
                 <hr className="col-8"/>
                 <Container>
                     <Row style={{textAlign:"center"}}>

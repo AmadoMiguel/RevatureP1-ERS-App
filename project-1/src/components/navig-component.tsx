@@ -33,9 +33,12 @@ export default class NavigatorMenu extends React.Component <any,any> {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              <NavItem>
-              <NavLink href="/#/users-menu">Users</NavLink>
-              </NavItem>
+              {
+                (localStorage.getItem("Role")==="Regular employee")||
+                <NavItem>
+                  <NavLink href="/#/users-menu">Users</NavLink>
+                </NavItem>
+              }
               <NavItem>
               <NavLink href="/#/reimbursements">Reimbursements</NavLink>
               </NavItem>

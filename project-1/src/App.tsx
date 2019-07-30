@@ -11,6 +11,7 @@ import { UsersInfoComponent } from './components/users-info-component';
 import { ReimbursementsByStatus } from './components/reimbursements-by-status';
 import { ReimbursementsByAuthor } from './components/reimbursements-by-author';
 import { NewReimbursementComponent } from './components/create-reimbursement-component';
+import { MyReimbursementsComponent } from './components/my-reimbursements-component';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
             <Route path='/users-menu/user' component = {UserByIdComponent} />
             <Route path='/users-menu/users' component = {UsersInfoComponent} />
             <Route path='/users-menu' component = {UsersMenuComponent} />
+            <Route path="/reimbursements/my-reimbursements" component = {MyReimbursementsComponent} />
             <Route path='/reimbursements/create' component = {NewReimbursementComponent} />
             <Route path='/reimbursements/status' component = {ReimbursementsByStatus} />
             <Route path='/reimbursements/author' component = {ReimbursementsByAuthor} />
