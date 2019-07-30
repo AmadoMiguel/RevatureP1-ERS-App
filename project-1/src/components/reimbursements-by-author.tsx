@@ -2,6 +2,7 @@ import * as React from 'react';
 import NavigatorMenu from './navig-component';
 import { Button, Container, Row, Col, Input } from 'reactstrap';
 import ersApi from '../util/ers-api';
+import Axios from 'axios';
 
 export class ReimbursementsByAuthor extends React.Component <any,any> {
     constructor(props:any) {
@@ -55,13 +56,64 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                 break;
         }
     }
+    // This function will only be called if the reimbursement status is selected to
+    // pending. The current user, if authorized, can select between aproving it and
+    // denying it using a button on the status column.
+    async solvePendingReimbursement(reimId:any,status:any){
+        const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
+        "Content-Type": "application/json"};
+        const body = {
+            reimbursementId:parseInt(reimId),
+            dateResolved: new Date().toISOString().slice(0,10),
+            description:"Resolved",
+            status: status
+        };
+        // Send the request to update user info
+        const response = await 
+        Axios(
+            {method:"PATCH",
+            url:"http://localhost:3006/Reimbursements",
+            headers:reqHeaders,
+            data:body
+            }
+        );
+        switch(response.data.status) {
+            case 201:
+                alert(`Reimbursement number ${body.reimbursementId} succesfully ${(body.status===2)?"approved":"denied"}`);
+                this.props.history.replace("/reimbursements");
+                break;
+        }
+    }
+
     render () {
         // Map each found reimbursement to a <Row> element, and assign each
         // reimbursement property (its values) to a <Col> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
+                
                 <tr key={reimb.id} className="table-info">
-                    {Object.values(reimb).map((prop:any)=>(<td>{prop}</td>))}
+                    {
+                        
+                        Object.keys(reimb).map((key:any)=>
+                            (
+                                ((reimb.status==="Pending")&&(key==="status"))?
+                                <td> 
+                                    <Button
+                                    style={{background:"green"}}
+                                    className="approve-deny-button"
+                                    onClick={()=>this.solvePendingReimbursement(reimb.id,2)}>
+                                        A</Button> 
+                                    <Button
+                                    style={{background:"red"}}
+                                    className="approve-deny-button"
+                                    onClick={()=>this.solvePendingReimbursement(reimb.id,3)}>
+                                        D</Button> 
+                                </td>
+                                :
+                                <td>{reimb[key]}</td>
+                            )
+                        )
+                    }
                 </tr>
             )
         });

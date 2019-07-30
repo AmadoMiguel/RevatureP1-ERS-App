@@ -88,11 +88,10 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
     render () {
         // Map each found reimbursement to a <Row> element, and assign each
         // reimbursement property (its values) to a <Col> element.
-        var nReimbs = 0;
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
                 
-                <tr id={`denied-reimb-${nReimbs++}`} key={reimb.id} className="table-info">
+                <tr key={reimb.id} className="table-info">
                     {
                         
                         Object.keys(reimb).map((key:any)=>
