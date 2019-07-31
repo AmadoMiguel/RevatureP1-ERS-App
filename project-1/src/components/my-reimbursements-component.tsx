@@ -1,8 +1,6 @@
 import * as React from 'react';
 import NavigatorMenu from './navig-component';
-import { Button, Container, Row, Col, Input } from 'reactstrap';
 import ersApi from '../util/ers-api';
-import Axios from 'axios';
 
 export class MyReimbursementsComponent extends React.Component <any,any> {
     constructor(props:any) {
