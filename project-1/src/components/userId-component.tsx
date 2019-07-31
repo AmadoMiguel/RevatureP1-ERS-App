@@ -6,6 +6,7 @@ import { Container, Row, Col } from 'reactstrap';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { TextField } from 'material-ui';
 import Axios from 'axios';
+import { ModifyPersonComponent } from './modify-user-component';
 // This component is planned to handle both search and update information to any 
 // particular user
 export class UserByIdComponent extends React.Component <any,any> {
@@ -82,6 +83,14 @@ export class UserByIdComponent extends React.Component <any,any> {
         }
     }
 
+    // Overwrite changes with changes if any
+    handleNewUserInfoChange(updatesOnUser:any) {
+        this.setState({
+            ...this.state,
+            ...updatesOnUser            
+        });
+    }
+
     async handleUpdateClick() {
         const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
         "Content-Type": "application/json"};
@@ -94,6 +103,7 @@ export class UserByIdComponent extends React.Component <any,any> {
                 role:this.state.role
         };
         // Send the request to update user info
+        console.log(this.state);
         const response = await 
         Axios(
             {method:"PATCH",
@@ -134,95 +144,18 @@ export class UserByIdComponent extends React.Component <any,any> {
                             {
                                 (localStorage.getItem('Role')==='admin')?
                                 <div>
-                                    <div className="person-box">
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>User Id</strong></Col> 
-                                                <Col>{this.state.userId}</Col>
-                                            </Row>
-                                        </Container>
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>F. Name</strong></Col> 
-                                                <Col xs="8" sm='6' md='6' xl='6'>
-                                                    <MuiThemeProvider>
-                                                        <TextField
-                                                            name="first-name"
-                                                            style={{width:"auto",fontSize:"2.5vh",
-                                                                    height:"5.7vh"}}
-                                                            onChange={(e:any,newVal)=>this.setState({firstName:newVal})}
-                                                            placeholder={this.state.firstName}
-                                                        />
-                                                    </MuiThemeProvider>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>L. Name</strong></Col> 
-                                                <Col xs="8" sm='6' md='6' xl='6'>
-                                                    <MuiThemeProvider>
-                                                            <TextField
-                                                                name="last-name"
-                                                                style={{width:"auto",fontSize:"2.5vh",
-                                                                        height:"5.7vh"}}
-                                                                onChange={(e:any,newVal)=>this.setState({lastName:newVal})}
-                                                                placeholder={this.state.lastName}
-                                                            />
-                                                    </MuiThemeProvider>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>User</strong></Col> 
-                                                <Col xs="8" sm='6' md='6' xl='6'>
-                                                    <MuiThemeProvider>
-                                                            <TextField
-                                                                name="username"
-                                                                style={{width:"auto",fontSize:"2.5vh",
-                                                                        height:"5.7vh"}}
-                                                                onChange={(e:any,newVal)=>this.setState({username:newVal})}
-                                                                placeholder={this.state.username}
-                                                            />
-                                                    </MuiThemeProvider>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>Email</strong></Col> 
-                                                <Col xs="8" sm='6' md='6' xl='6'>
-                                                    <MuiThemeProvider>
-                                                            <TextField
-                                                                name="email"
-                                                                style={{width:"auto",fontSize:"2.5vh",
-                                                                        height:"5.7vh"}}
-                                                                onChange={(e:any,newVal)=>this.setState({email:newVal})}
-                                                                placeholder={this.state.email}
-                                                            />
-                                                    </MuiThemeProvider>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                        <Container>
-                                            <Row>
-                                                <Col><strong>Role</strong></Col> 
-                                                <Col xs="8" sm='6' md='6' xl='6'>
-                                                    <MuiThemeProvider>
-                                                            <TextField
-                                                                name="role"
-                                                                style={{width:"auto",fontSize:"2.5vh",
-                                                                        height:"5.7vh"}}
-                                                                onChange={(e:any,newVal)=>this.setState({role:newVal})}
-                                                                placeholder={this.state.role}
-                                                            />
-                                                    </MuiThemeProvider>
-                                                </Col>
-                                            </Row>
-                                        </Container>
+                                    <div>
+                                        <ModifyPersonComponent
+                                        handle={this.handleNewUserInfoChange.bind(this)} 
+                                        userId={this.state.userId}
+                                        firstName={this.state.firstName}
+                                        lastName={this.state.lastName}
+                                        username={this.state.username}
+                                        email={this.state.email}
+                                        role={this.state.role}/>
                                     </div>
                                     {/* This button triggers the patch request to the server */}
+
                                     <button 
                                     id="update-user-button"
                                     onClick={()=>this.handleUpdateClick()}>
