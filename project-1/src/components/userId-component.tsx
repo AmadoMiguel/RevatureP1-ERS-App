@@ -2,9 +2,6 @@ import React from 'react';
 import { PersonComponent } from './person-component';
 import NavigatorMenu from './navig-component';
 import ersApi from '../util/ers-api';
-import { Container, Row, Col } from 'reactstrap';
-import { MuiThemeProvider } from 'material-ui/styles';
-import { TextField } from 'material-ui';
 import Axios from 'axios';
 import { ModifyPersonComponent } from './modify-user-component';
 // This component is planned to handle both search and update information to any 
@@ -155,7 +152,6 @@ export class UserByIdComponent extends React.Component <any,any> {
                                         role={this.state.role}/>
                                     </div>
                                     {/* This button triggers the patch request to the server */}
-
                                     <button 
                                     id="update-user-button"
                                     onClick={()=>this.handleUpdateClick()}>

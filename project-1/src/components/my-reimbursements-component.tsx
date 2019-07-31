@@ -11,8 +11,8 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
             reimbursements:[]
         }
     }
-    async getReimbursements() {
-        // Send the request to the server
+    // Send the request to the server when component is mounted
+    async componentDidMount() {
         // Configure request headers for auth token
         const config = {
             headers:
@@ -26,7 +26,7 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
         console.log(foundReimbursements.data);
         switch(foundReimbursements.data.status){
             case 404: // Not found
-                alert("No found reimbursements");
+                alert("You don't have reimbursements");
                 this.setState({
                     reimbursements:[]
                 });
@@ -51,25 +51,7 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <h3>Search my reimbursements: </h3>
-                <hr className="col-8"/>
-                <Container>
-                    <Row style={{textAlign:"center"}}>
-                        <Col></Col>
-                        <Col></Col>
-                        <Col></Col>
-                        {/* This button triggers the get request for the reimbursements */}
-                        <Col>
-                            <Button onClick={()=>this.getReimbursements()}>
-                                Search
-                            </Button>
-                        </Col>
-                        <Col></Col>
-                        <Col></Col>
-                        <Col></Col>
-                    </Row>
-                    <br/>
-                </Container>
+                <br/>
                 {
                     (this.state.reimbursements.length) ?
                     // Show the table when user is not searching

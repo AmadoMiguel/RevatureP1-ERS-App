@@ -12,8 +12,8 @@ export class UsersInfoComponent extends React.Component<any,any> {
         }
     }
 
-    // Send request to get all users info
-    async getAllUsers() {
+    // Send request to get all users info when component is mounted
+    async componentDidMount() {
         // Configure request headers for auth token
         const config = {
             headers:
@@ -43,6 +43,7 @@ export class UsersInfoComponent extends React.Component<any,any> {
                 });
                 break;
         }
+        
 
     }
 
@@ -60,11 +61,6 @@ export class UsersInfoComponent extends React.Component<any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <br/>
-                {/* Trigger the request to the server */}
-                <button onClick={()=>this.getAllUsers()}>
-                    Search
-                </button>
                 <br/>
                 {
                     (this.state.reqStatus===403)
