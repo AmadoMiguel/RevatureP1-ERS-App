@@ -25,20 +25,23 @@ export class ReimbsComponent extends React.Component <any,any> {
                             <h5>Search reimbursements</h5>
                             <hr/>
                             {
-                                (localStorage.getItem("Role")==="Regular employee")?
-                                <div>
-                                    <Link to="reimbursements/my-reimbursements" >
-                                        My reimbursements
-                                    </Link>
-                                </div>
+                                // Reimbursements page for regular users
+                                (localStorage.getItem("Role")==="Regular employee")
+                                ?
+                                    <div>
+                                        <Link to="reimbursements/my-reimbursements" >
+                                            My reimbursements
+                                        </Link>
+                                    </div>
                                 :
-                                <div>
-                                    <Link to='reimbursements/status' >By status</Link>
-                                    <br/>
-                                    or
-                                    <br/>
-                                    <Link to='reimbursements/author' >By author</Link>
-                                </div>
+                                // Reimbursements page for finance-manager-admin
+                                    <div>
+                                        <Link to='reimbursements/status' >By status</Link>
+                                        <br/>
+                                        or
+                                        <br/>
+                                        <Link to='reimbursements/author' >By author</Link>
+                                    </div>
                             }
                         </div>
                         {/* Button for changing to create new reimbursement mode */}

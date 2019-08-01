@@ -85,14 +85,15 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
     }
 
     render () {
-        // Map each found reimbursement to a <Row> element, and assign each
-        // reimbursement property (its values) to a <Col> element.
+        // Map each found reimbursement to a <tr> element, and assign each
+        // reimbursement property (its values) to a <td> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
                 
                 <tr key={reimb.id} className="table-info">
                     {
-                        
+                        // Pending reimbursements can be solved. Two buttons (approve/deny) are provided
+                        // for a finance/manager/admin to solve them.
                         Object.keys(reimb).map((key:any)=>
                             (
                                 ((reimb.status==="Pending")&&(key==="status"))?
@@ -121,9 +122,10 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
             <div>
                 <NavigatorMenu />
                 <h3>Search reimbursements by author ID: </h3>
-                {/* Display this only for authorized roles */}
-                {(localStorage.getItem("Role")==="admin"||localStorage.getItem("Role")==="finance"||
-                localStorage.getItem("Role")==="manager")&&
+                {
+                    // Display this only for authorized roles
+                    !(localStorage.getItem("Role")==="Regular employee")
+                    &&
                     <h6>(hint: pending reimbursements can be resolved)</h6>
                 }
                 <hr className="col-8"/>

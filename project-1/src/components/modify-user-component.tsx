@@ -1,7 +1,5 @@
 import React from 'react';
 import { Col, Container, Row, Input } from 'reactstrap';
-import { TextField } from 'material-ui';
-import { MuiThemeProvider } from 'material-ui/styles';
 
 export class ModifyPersonComponent extends React.Component<any,any> {
     constructor(props:any) {

@@ -86,14 +86,15 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
         }
     }
     render () {
-        // Map each found reimbursement to a <Row> element, and assign each
-        // reimbursement property (its values) to a <Col> element.
+        // Map each found reimbursement to a <tr> element, and assign each
+        // reimbursement property (its values) to a <td> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
             return(
                 
                 <tr key={reimb.id} className="table-info">
                     {
-                        
+                        // Pending reimbursements can be solved. Two buttons (approve/deny) are provided
+                        // for a finance/manager/admin to solve them.
                         Object.keys(reimb).map((key:any)=>
                             (
                                 ((reimb.status==="Pending")&&(key==="status"))?
