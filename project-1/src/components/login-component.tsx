@@ -78,20 +78,20 @@ export class LoginComponent extends React.Component <any,any> {
                         {/* Text fields for username and password with 
                         onChange listeners */}
                         <TextField
-                        inputStyle={{background:"rgba(2,130,20,0.2)",
+                        inputStyle={{background:"rgba(2,130,20,0.3)",
                         color:"black"}}
                         floatingLabelText="Username"
-                        floatingLabelStyle={{color:"white"}}
+                        floatingLabelStyle={{color:"darkblue",fontFamily:"sans-serif"}}
                         onChange = {(event,newValue) => 
                             this.setState({username:newValue})}
                         />
                         <br/><br/>
                         <TextField
-                        inputStyle={{background:"rgba(2,130,20,0.2)",
+                        inputStyle={{background:"rgba(2,130,20,0.3)",
                         color:"black"}}
                         type="password"
                         floatingLabelText="Password"
-                        floatingLabelStyle={{color:"white"}}
+                        floatingLabelStyle={{color:"darkblue"}}
                         onChange = {(event,newValue) => 
                             this.setState({password:newValue})}
                         />

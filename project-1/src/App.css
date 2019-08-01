@@ -57,7 +57,10 @@
 
 .user-info-input {
   width: auto;
-  border: 1px solid black;
+  border-radius: 3px;
+  font-size:2.2vh;
+  height:5.7vh;
+  color:red;
 }
 
 .person-box {
@@ -66,9 +69,16 @@
   height: 35vh;
 }
 
+#confirm-user-update{
+  font-size:2.5vh;
+  width: auto;
+  margin: 2px auto;
+  color:red;
+}
 #update-user-button {
   font-size:2.5vh;
   width: auto;
+  margin: 2px auto;
 }
 
 #search-reimbursements-box {

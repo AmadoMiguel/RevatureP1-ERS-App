@@ -97,7 +97,14 @@ export class UserByIdComponent extends React.Component <any,any> {
                 lastName:this.state.lastName,
                 username:this.state.username,
                 email:this.state.email,
-                role:this.state.role
+                // Depending on the provided role name, is going to be assigned a role id
+                roleId:
+                (this.state.role==="Regular employee")?
+                1:(this.state.role==="finance")?
+                2:(this.state.role==="manager")?
+                3:(this.state.role==="admin")?
+                4:
+                null
         };
         // Send the request to update user info
         console.log(this.state);

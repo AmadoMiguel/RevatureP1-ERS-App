@@ -120,7 +120,7 @@ export class ReimbursementsByStatus extends React.Component <any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <h3>Search reimbursement by status: </h3>
+                <h3>Search reimbursements by status: </h3>
                 {/* Display this only for authorized roles */}
                 {(localStorage.getItem("Role")==="admin"||localStorage.getItem("Role")==="finance"||
                 localStorage.getItem("Role")==="manager")&&

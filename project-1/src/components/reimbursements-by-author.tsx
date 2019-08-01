@@ -9,7 +9,7 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
         super(props);
         this.state={
             reimbursements:[],
-            inputValue:1,
+            inputValue:0,
             authorization:0,
             searching:true
         }
@@ -17,7 +17,7 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
     handleInputChange(e:any) {
         const val = e.target.value;
         this.setState({
-            inputValue:val,
+            inputValue:(val)?val:0,
             searching:true
         });
     }
@@ -101,7 +101,8 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                                     style={{background:"green"}}
                                     className="approve-deny-button"
                                     onClick={()=>this.solvePendingReimbursement(reimb.id,2)}>
-                                        A</Button> 
+                                        A</Button>
+                                         
                                     <Button
                                     style={{background:"red"}}
                                     className="approve-deny-button"
@@ -119,7 +120,7 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <h3>Search reimbursement by author ID: </h3>
+                <h3>Search reimbursements by author ID: </h3>
                 {/* Display this only for authorized roles */}
                 {(localStorage.getItem("Role")==="admin"||localStorage.getItem("Role")==="finance"||
                 localStorage.getItem("Role")==="manager")&&
