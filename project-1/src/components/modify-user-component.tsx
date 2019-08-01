@@ -10,13 +10,23 @@ export class ModifyPersonComponent extends React.Component<any,any> {
             lastName:this.props.lastName,
             username:this.props.username,
             email:this.props.email,
-            role:this.props.role
+            role:this.props.role,
+            infoUpdated:false
         }
     }
     
     handleNewUserInfoChange = (event:any) => {
-        this.setState({[event.target.name]:event.target.value})
+        this.setState({
+            [event.target.name]:event.target.value,
+            infoUpdated:false
+        })
     };
+    handleUserInfoUpdateClick() {
+        this.props.handle(this.state);
+        this.setState({
+            infoUpdated:true
+        });
+    }
 
     render() {
         return (
@@ -92,18 +102,22 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                             />
                         </Col>
                     </Row>
-                    <Row>
-                        <Col></Col>
-                        <Col xs="8" sm='6' md='6' xl='6'>
-                            <button 
-                                id="confirm-user-update"
-                                onClick={()=>this.props.handle(this.state)}>
-                                confirm changes</button>
-                        </Col>
-                    </Row>
-                    
+                    {
+                        this.state.infoUpdated 
+                        ||
+                        <div>
+                            <Row>
+                                <Col></Col>
+                                <Col xs="8" sm='6' md='6' xl='6'>
+                                    <button 
+                                        id="confirm-user-update"
+                                        onClick={()=>{this.handleUserInfoUpdateClick()}}>
+                                        confirm changes</button>
+                                </Col>
+                            </Row>
+                        </div>
+                    }
                 </Container>
-                
             </div>
         );
     }

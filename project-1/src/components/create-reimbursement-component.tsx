@@ -81,7 +81,7 @@ export class NewReimbursementComponent extends React.Component <any,any> {
             <div>
                 <NavigatorMenu />
                 {/* Set the imput fields to let the user create a new reimbursement */}
-                <h4>Create a new Reimbursement</h4>
+                <h4>Enter Reimbursement info:</h4>
                 <br/>
                 <Container>
                     <Row>

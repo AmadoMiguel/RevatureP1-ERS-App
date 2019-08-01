@@ -20,7 +20,8 @@ export class UserByIdComponent extends React.Component <any,any> {
             role:'',
             inputValue:'',
             searched:false,
-            searchStatus:0
+            searchStatus:0,
+            changingUserInfo:false
         }
     }
 
