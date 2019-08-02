@@ -1,6 +1,7 @@
 import * as React from 'react';
 import NavigatorMenu from './navig-component';
 import ersApi from '../util/ers-api';
+import { User } from '../models/user-model';
 
 export class MyReimbursementsComponent extends React.Component <any,any> {
     constructor(props:any) {
@@ -11,6 +12,9 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
     }
     // Send the request to the server when component is mounted
     async componentDidMount() {
+        // Determine current user
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         // Configure request headers for auth token
         const config = {
             headers:
@@ -19,9 +23,8 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
         };
         // Variable that stores the response from the user
         let foundReimbursements = await ersApi.get(
-        `/Reimbursements/author/${localStorage.getItem("User ID")}`
+        `/Reimbursements/author/${currUser.userId}`
         ,config);
-        console.log(foundReimbursements.data);
         switch(foundReimbursements.data.status){
             case 404: // Not found
                 alert("You don't have reimbursements");
@@ -49,7 +52,7 @@ export class MyReimbursementsComponent extends React.Component <any,any> {
         return (
             <div>
                 <NavigatorMenu />
-                <br/>
+                <h4>My Reimbursements</h4>
                 {
                     (this.state.reimbursements.length) ?
                     // Show the table when user is not searching

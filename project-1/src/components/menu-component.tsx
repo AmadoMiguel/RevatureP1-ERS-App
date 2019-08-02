@@ -2,9 +2,13 @@ import * as React from 'react';
 import NavigatorMenu from './navig-component';
 import { CurrentUserComponent } from './user-component';
 import { PleaseLoginComponent } from './please-login-component';
+import { User } from '../models/user-model';
 
 export class MenuComponent extends React.Component {
     render () {
+        // Get current user info
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         return (
             <div>
                 {
@@ -15,7 +19,7 @@ export class MenuComponent extends React.Component {
                         <NavigatorMenu />
                         <h3>Welcome,</h3>
                         <h4>
-                            {localStorage.getItem('First name')} {localStorage.getItem('Last name')} 
+                            {currUser.firstName} {currUser.lastName} 
                         </h4>
                         <br/>
                         <CurrentUserComponent />

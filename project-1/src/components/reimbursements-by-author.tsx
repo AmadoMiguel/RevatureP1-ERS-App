@@ -3,6 +3,7 @@ import NavigatorMenu from './navig-component';
 import { Button, Container, Row, Col, Input } from 'reactstrap';
 import ersApi from '../util/ers-api';
 import Axios from 'axios';
+import { User } from '../models/user-model';
 
 export class ReimbursementsByAuthor extends React.Component <any,any> {
     constructor(props:any) {
@@ -85,6 +86,9 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
     }
 
     render () {
+        // Get current user info
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         // Map each found reimbursement to a <tr> element, and assign each
         // reimbursement property (its values) to a <td> element.
         const reimbsAsRows = this.state.reimbursements.map((reimb:any) => {
@@ -124,7 +128,7 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
                 <h3>Search reimbursements by author ID: </h3>
                 {
                     // Display this only for authorized roles
-                    !(localStorage.getItem("Role")==="Regular employee")
+                    !(currUser.role==="Regular employee")
                     &&
                     <h6>(hint: pending reimbursements can be resolved)</h6>
                 }

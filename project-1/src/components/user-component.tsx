@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
+import { User } from '../models/user-model';
 
 // Component to display current user information, whose information
 // is being stored locally
@@ -8,6 +9,8 @@ import { Container, Row, Col } from 'reactstrap';
 // is received
 export class CurrentUserComponent extends React.Component <any,any> {
     render () {
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         return (
             // Define container for person information
             // Set responsive display according to size 
@@ -17,37 +20,37 @@ export class CurrentUserComponent extends React.Component <any,any> {
                 <Container>
                     <Row key="user-id">
                         <Col><strong>User Id</strong></Col>
-                        <Col>{localStorage.getItem("User ID")}</Col>
+                        <Col>{currUser.userId}</Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row key="first-name">
                         <Col><strong>First Name</strong></Col>
-                        <Col>{localStorage.getItem("First name")}</Col>
+                        <Col>{currUser.firstName}</Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row key="last-name">
                         <Col><strong>Last Name</strong></Col>
-                        <Col>{localStorage.getItem("Last name")}</Col>
+                        <Col>{currUser.lastName}</Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row key="username">
                         <Col><strong>Username</strong></Col>
-                        <Col>{localStorage.getItem("username")}</Col>
+                        <Col>{currUser.username}</Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row key="email">
                         <Col><strong>Email</strong></Col>
-                        <Col>{localStorage.getItem("email")}</Col>
+                        <Col>{currUser.email}</Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row key="role">
                         <Col><strong>Role</strong></Col>
-                        <Col>{localStorage.getItem("Role")}</Col>
+                        <Col>{currUser.role}</Col>
                     </Row>
                 </Container>
             </div>

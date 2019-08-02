@@ -12,40 +12,26 @@ export class NewReimbursementComponent extends React.Component <any,any> {
             reimbType:1,
             amount:0,
             description:'',
-            dateSubmitted:'',
-            authStatus:0
+            dateSubmitted:''
         }
     }
-    handleAmountChange(e:any){
-        const amount = e.target.value;
+
+    handleNewReimbInfo(e:any) {
         this.setState({
-            amount:parseFloat(amount)
+            [e.target.name]:e.target.value
         })
     }
-    handleDescriptionChange(e:any) {
-        const newDescription = e.target.value;
-        this.setState({
-            description:newDescription
-        })
-    }
+
     // Handle reimbursement type selector
     handleReimbTypeChange(v:any) {
         this.setState({
             reimbType:v
         })
     }
-    // Handle date submitted selector
-    handleDateSubmitChange(e:any) {
-        const date = e.target.value;
-        this.setState({
-            dateSubmitted:date
-        })
-    }
     // Send post request
     async createNewReimbursement() {
         const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
         "Content-Type": "application/json"};
-        
         const body = {
                 amount:this.state.amount,
                 description:this.state.description,
@@ -70,12 +56,9 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                 alert("Succesfully created.");
                 this.props.history.replace("/reimbursements");
                 break;
-            case 403:
-                this.setState({authStatus:response.data.status});
-                break;
         }
     }
-
+    
     render () {
         return (
             <div>
@@ -89,14 +72,16 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                         <Col><Input 
                         placeholder="$usd"
                         type="number"
-                        onChange={(e)=>this.handleAmountChange(e)}
+                        name="amount"
+                        onChange={(e)=>this.handleNewReimbInfo(e)}
                          /></Col>
                     </Row>
                     <Row>
                         <Col><strong>Description:</strong></Col>
                         <Col><Input 
                         placeholder="ex: Taxi cost"
-                        onChange={(e)=>this.handleDescriptionChange(e)} /></Col>
+                        name="description"
+                        onChange={(e)=>this.handleNewReimbInfo(e)} /></Col>
                     </Row>
                     <Row>
                         <Col><strong>Type:</strong></Col>
@@ -118,7 +103,8 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                         <Col><strong>Today's date:</strong></Col>
                         <Col>
                         <Input type="date"
-                        onChange={(e)=>this.handleDateSubmitChange(e)}/>
+                        name="dateSubmitted"
+                        onChange={(e)=>this.handleNewReimbInfo(e)}/>
                         </Col>
                     </Row>
                 </Container>
@@ -127,13 +113,6 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                 onClick={()=>this.createNewReimbursement()}>
                     Create
                 </Button>
-                {/* In case user is not authorized */}
-                {
-                    (this.state.authStatus) &&
-                    (this.state.authStatus===403)?
-                    <div>You are not authorized</div>:
-                    <div></div>
-                }
             </div>
         );
     }

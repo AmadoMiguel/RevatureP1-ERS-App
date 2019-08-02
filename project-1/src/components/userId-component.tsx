@@ -4,6 +4,7 @@ import NavigatorMenu from './navig-component';
 import ersApi from '../util/ers-api';
 import Axios from 'axios';
 import { ModifyPersonComponent } from './modify-user-component';
+import { User } from '../models/user-model';
 // This component is planned to handle both search and update information to any 
 // particular user
 export class UserByIdComponent extends React.Component <any,any> {
@@ -126,6 +127,9 @@ export class UserByIdComponent extends React.Component <any,any> {
         }
     }
     render () {
+        // Get current user information
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         return (
                 <div>
                     <NavigatorMenu />
@@ -147,7 +151,7 @@ export class UserByIdComponent extends React.Component <any,any> {
                             id ="user-info-list">
                             {/* Allow users info modification only for admin */}
                             {
-                                (localStorage.getItem('Role')==='admin')?
+                                (currUser.role==='admin')?
                                 <div>
                                     <div>
                                         <ModifyPersonComponent
