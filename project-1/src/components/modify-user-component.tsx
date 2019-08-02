@@ -46,7 +46,7 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                                 name="firstName"
                                 className="user-info-input"
                                 onChange={(e)=>this.handleNewUserInfoChange(e)}
-                                placeholder={this.props.firstName}
+                                defaultValue={this.props.firstName}
                             />
                         </Col>
                     </Row>
@@ -59,7 +59,7 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                                 name="lastName"
                                 className="user-info-input"
                                 onChange={(e)=>this.handleNewUserInfoChange(e)}
-                                placeholder={this.props.lastName}
+                                defaultValue={this.props.lastName}
                             />
                         </Col>
                     </Row>
@@ -72,7 +72,7 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                                 name="username"
                                 className="user-info-input"
                                 onChange={(e)=>this.handleNewUserInfoChange(e)}
-                                placeholder={this.props.username}
+                                defaultValue={this.props.username}
                             />
                         </Col>
                     </Row>
@@ -85,7 +85,7 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                                 name="email"
                                 className="user-info-input"
                                 onChange={(e)=>this.handleNewUserInfoChange(e)}
-                                placeholder={this.props.email}
+                                defaultValue={this.props.email}
                             />
                         </Col>
                     </Row>
@@ -98,7 +98,7 @@ export class ModifyPersonComponent extends React.Component<any,any> {
                                 name="role"
                                 className="user-info-input"
                                 onChange={(e)=>this.handleNewUserInfoChange(e)}
-                                placeholder={this.props.role}
+                                defaultValue={this.props.role}
                             />
                         </Col>
                     </Row>
