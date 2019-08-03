@@ -11,8 +11,7 @@ export class NewReimbursementComponent extends React.Component <any,any> {
         this.state ={
             reimbType:1,
             amount:0,
-            description:'',
-            dateSubmitted:''
+            description:''
         }
     }
 
@@ -36,7 +35,7 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                 amount:this.state.amount,
                 description:this.state.description,
                 type:this.state.reimbType,
-                dateSubmitted:this.state.dateSubmitted
+                dateSubmitted:new Date().toISOString().slice(0,10)
         };
         // Send the request to update user info
         const response = await 
@@ -97,14 +96,6 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                                     <MenuItem value={4} primaryText="Other" />
                                 </DropDownMenu>
                             </MuiThemeProvider>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col><strong>Today's date:</strong></Col>
-                        <Col>
-                        <Input type="date"
-                        name="dateSubmitted"
-                        onChange={(e)=>this.handleNewReimbInfo(e)}/>
                         </Col>
                     </Row>
                 </Container>

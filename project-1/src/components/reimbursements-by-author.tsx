@@ -79,8 +79,8 @@ export class ReimbursementsByAuthor extends React.Component <any,any> {
         );
         switch(response.data.status) {
             case 201:
-                alert(`Reimbursement number ${body.reimbursementId} succesfully ${(body.status===2)?"approved":"denied"}`);
-                this.props.history.replace("/reimbursements");
+                // Request the reimbursements again in order to update the view
+                this.getReimbursements();
                 break;
         }
     }
