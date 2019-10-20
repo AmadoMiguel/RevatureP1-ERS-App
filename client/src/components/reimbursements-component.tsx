@@ -3,6 +3,7 @@ import NavigatorMenu from './navig-component';
 import { Link } from 'react-router-dom';
 import { Button } from 'reactstrap';
 import { PleaseLoginComponent } from './please-login-component';
+import { User } from '../models/user-model';
 
 export class ReimbsComponent extends React.Component <any,any> {
 
@@ -11,6 +12,8 @@ export class ReimbsComponent extends React.Component <any,any> {
     }
 
     render () {
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
         return (
             <div>
                 {
@@ -26,7 +29,7 @@ export class ReimbsComponent extends React.Component <any,any> {
                             <hr/>
                             {
                                 // Reimbursements page for regular users
-                                (localStorage.getItem("Role")==="Regular employee")
+                                (currUser.role==="Regular employee")
                                 ?
                                     <div>
                                         <Link to="reimbursements/my-reimbursements" >
@@ -46,7 +49,9 @@ export class ReimbsComponent extends React.Component <any,any> {
                         </div>
                         {/* Button for changing to create new reimbursement mode */}
                         <br/>
-                        <Button onClick={()=>this.goToCreateReimbursement()}>Create new reimbursement</Button>
+                        <Button onClick={()=>this.goToCreateReimbursement()}>
+                            Create new reimbursement
+                        </Button>
                     </div>:
                     <div>
                         <br/><br/>

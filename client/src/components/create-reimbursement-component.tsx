@@ -11,46 +11,31 @@ export class NewReimbursementComponent extends React.Component <any,any> {
         this.state ={
             reimbType:1,
             amount:0,
-            description:'',
-            dateSubmitted:'',
-            authStatus:0
+            description:''
         }
     }
-    handleAmountChange(e:any){
-        const amount = e.target.value;
+
+    handleNewReimbInfo(e:any) {
         this.setState({
-            amount:parseFloat(amount)
+            [e.target.name]:e.target.value
         })
     }
-    handleDescriptionChange(e:any) {
-        const newDescription = e.target.value;
-        this.setState({
-            description:newDescription
-        })
-    }
+
     // Handle reimbursement type selector
     handleReimbTypeChange(v:any) {
         this.setState({
             reimbType:v
         })
     }
-    // Handle date submitted selector
-    handleDateSubmitChange(e:any) {
-        const date = e.target.value;
-        this.setState({
-            dateSubmitted:date
-        })
-    }
     // Send post request
     async createNewReimbursement() {
         const reqHeaders={"Authorization":localStorage.getItem('auth-token'),
         "Content-Type": "application/json"};
-        
         const body = {
                 amount:this.state.amount,
                 description:this.state.description,
                 type:this.state.reimbType,
-                dateSubmitted:this.state.dateSubmitted
+                dateSubmitted:new Date().toISOString().slice(0,10)
         };
         // Send the request to update user info
         const response = await 
@@ -70,18 +55,15 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                 alert("Succesfully created.");
                 this.props.history.replace("/reimbursements");
                 break;
-            case 403:
-                this.setState({authStatus:response.data.status});
-                break;
         }
     }
-
+    
     render () {
         return (
             <div>
                 <NavigatorMenu />
                 {/* Set the imput fields to let the user create a new reimbursement */}
-                <h4>Create a new Reimbursement</h4>
+                <h4>Enter Reimbursement info:</h4>
                 <br/>
                 <Container>
                     <Row>
@@ -89,14 +71,16 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                         <Col><Input 
                         placeholder="$usd"
                         type="number"
-                        onChange={(e)=>this.handleAmountChange(e)}
+                        name="amount"
+                        onChange={(e)=>this.handleNewReimbInfo(e)}
                          /></Col>
                     </Row>
                     <Row>
                         <Col><strong>Description:</strong></Col>
                         <Col><Input 
                         placeholder="ex: Taxi cost"
-                        onChange={(e)=>this.handleDescriptionChange(e)} /></Col>
+                        name="description"
+                        onChange={(e)=>this.handleNewReimbInfo(e)} /></Col>
                     </Row>
                     <Row>
                         <Col><strong>Type:</strong></Col>
@@ -114,26 +98,12 @@ export class NewReimbursementComponent extends React.Component <any,any> {
                             </MuiThemeProvider>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col><strong>Today's date:</strong></Col>
-                        <Col>
-                        <Input type="date"
-                        onChange={(e)=>this.handleDateSubmitChange(e)}/>
-                        </Col>
-                    </Row>
                 </Container>
                 <br/>
                 <Button
                 onClick={()=>this.createNewReimbursement()}>
                     Create
                 </Button>
-                {/* In case user is not authorized */}
-                {
-                    (this.state.authStatus) &&
-                    (this.state.authStatus===403)?
-                    <div>You are not authorized</div>:
-                    <div></div>
-                }
             </div>
         );
     }

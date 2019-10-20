@@ -43,8 +43,6 @@ export class UsersInfoComponent extends React.Component<any,any> {
                 });
                 break;
         }
-        
-
     }
 
     render() {

@@ -8,9 +8,6 @@ import TextField from 'material-ui/TextField';
 import * as React from 'react';
 import ersApi from '../util/ers-api';
 
-// import { Redirect } from 'react-router-dom';
-// import { Link } from 'react-router-dom';
-
 export class LoginComponent extends React.Component <any,any> {
     constructor(props:any) {
         super(props);
@@ -39,13 +36,9 @@ export class LoginComponent extends React.Component <any,any> {
                     // Set the user token value 
                     this.setState({token:userInfo.data.info[1].token});
                     // Use local storage to store current user information
-                    localStorage.setItem('auth-token',this.state.token);
-                    localStorage.setItem('Role',userInfo.data.info[0].role);
-                    localStorage.setItem('email',userInfo.data.info[0].email);    
-                    localStorage.setItem('username',userInfo.data.info[0].username);
-                    localStorage.setItem('Last name',userInfo.data.info[0].lastName);
-                    localStorage.setItem('First name',userInfo.data.info[0].firstName); 
-                    localStorage.setItem('User ID',userInfo.data.info[0].userId);                                    
+                    localStorage.setItem("Current User",JSON.stringify(userInfo.data.info[0]));
+                    // Store the token separately
+                    localStorage.setItem('auth-token',this.state.token);                              
                     // Take user to menu page
                     this.props.history.replace("/main");
                     break;

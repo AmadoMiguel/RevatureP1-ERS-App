@@ -9,6 +9,7 @@ import {
   Nav,
   NavItem,
   NavLink} from 'reactstrap';
+import { User } from '../models/user-model';
 
 export default class NavigatorMenu extends React.Component <any,any> {
   constructor(props:any) {
@@ -25,6 +26,9 @@ export default class NavigatorMenu extends React.Component <any,any> {
     });
   }
   render() {
+    // Get current user info
+        const userJson = localStorage.getItem("Current User");
+        const currUser = userJson !== null ? new User(JSON.parse(userJson)) : new User({});
     return (
       <div>
         <Navbar style={{backgroundColor: 'rgba(2,100,200,0.2)',fontWeight:'bold'}} 
@@ -34,7 +38,7 @@ export default class NavigatorMenu extends React.Component <any,any> {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
               {
-                (localStorage.getItem("Role")==="Regular employee")||
+                (currUser.role==="Regular employee")||
                 <NavItem>
                   <NavLink href="/#/users-menu">Users</NavLink>
                 </NavItem>
