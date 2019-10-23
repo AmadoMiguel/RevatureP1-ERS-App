@@ -8,7 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ers.models.ClientInfo;
+import com.ers.exceptions.EmailInUseException;
+import com.ers.exceptions.UserNotFoundException;
 import com.ers.models.User;
 import com.ers.repositories.UserRepository;
 
@@ -20,25 +21,57 @@ public class UserService {
 	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-
+	
+//	Send paginated users information
 	public Page<User> getAllUsers(Optional<Integer> page) {
-		Pageable pageable = PageRequest.of(page.orElse(0), 3);
+		Pageable pageable = PageRequest.of(page.orElse(0), 5);
 		return this.userRepository.findAll(pageable);
 	}
-	public Optional<User> getUserById(int userId) {
-		return this.userRepository.findById(userId);
+	
+	public User getUserById(int userId) throws UserNotFoundException {
+		Optional<User> foundUser = this.userRepository.findById(userId);
+		if (foundUser.isPresent()) {
+			return foundUser.get();
+		} else {
+			throw new UserNotFoundException("User with id "+userId+" not found.");
+		}
 	}
 	
-	public User registerUser(User newUser) {
+	public Optional<User> findUserByEmail(String email) {
+		return this.findUserByEmail(email);
+	}
+	
+	public User registerUser(User newUser) throws EmailInUseException {
+//		Check that email is not in the database
+		Optional<User> otherUser = findUserByEmail(newUser.getEmail());
+		if (otherUser.isPresent()) {
+			throw new EmailInUseException("Email already in use.");
+		}
 		return this.userRepository.save(newUser);
 	}
 	
-	public User updateUser(User newUserInfo) {
-		Optional<User> userToUpdate = getUserById(newUserInfo.getId());
-		if (userToUpdate.isPresent()) {
+	public User updateUser(User newUserInfo) throws UserNotFoundException,
+	EmailInUseException {
+		User userToUpdate = getUserById(newUserInfo.getId());
+		if (userToUpdate != null) {
+//			Now check if the new email in the updated user info is not in use
+			Optional<User> userWithSameEmail = findUserByEmail(userToUpdate.getEmail());
+			if (userWithSameEmail.isPresent()) {
+				throw new EmailInUseException("Email already in use.");
+			}
 			return this.userRepository.save(newUserInfo);
+		} else {
+//			In case user is not in the database
+			throw new UserNotFoundException("User with id "+newUserInfo.getId()+" not found.");
+		}	
+	}
+	
+	public void deleteUser(int userId) throws UserNotFoundException {
+		User userToRemove = getUserById(userId);
+		if (userToRemove != null) {
+			this.userRepository.delete(userToRemove);
+		} else {
+			throw new UserNotFoundException("User with id "+userId+" not found.");
 		}
-//		In case user is not in the database
-		return null;
 	}
 }
