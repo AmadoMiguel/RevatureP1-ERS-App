@@ -32,11 +32,11 @@ public class Reimbursement {
 	
 	@ManyToOne
 	@JoinColumn(name= "author_id", nullable= false)
-	private User author;
+	private UserInfo author;
 	
 	@ManyToOne
 	@JoinColumn(name= "resolver_id", nullable= false)
-	private User resolver;
+	private UserInfo resolver;
 	
 	@ManyToOne
 	@JoinColumn(name= "status_id", nullable= false)
@@ -49,7 +49,7 @@ public class Reimbursement {
 	private LocalDate dateResolved;
 
 	public Reimbursement(int id, double amount, String description, ReimbursementType type, 
-			User author, User resolver, ReimbursementStatus status, LocalDate dateSubmitted, 
+			UserInfo author, UserInfo resolver, ReimbursementStatus status, LocalDate dateSubmitted, 
 			LocalDate dateResolved) {
 		super();
 		this.id = id;
@@ -99,19 +99,19 @@ public class Reimbursement {
 		this.type = type;
 	}
 
-	public User getAuthor() {
+	public UserInfo getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(User author) {
+	public void setAuthor(UserInfo author) {
 		this.author = author;
 	}
 
-	public User getResolver() {
+	public UserInfo getResolver() {
 		return resolver;
 	}
 
-	public void setResolver(User resolver) {
+	public void setResolver(UserInfo resolver) {
 		this.resolver = resolver;
 	}
 

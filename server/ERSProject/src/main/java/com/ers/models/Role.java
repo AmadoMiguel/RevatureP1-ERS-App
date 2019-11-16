@@ -26,7 +26,7 @@ public class Role {
 	@Transient
 	@OneToMany
 	@JoinColumn(name= "role_id")
-	List<User> users;
+	List<UserInfo> users;
 
 	public Role() {
 		super();

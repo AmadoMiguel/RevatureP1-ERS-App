@@ -21,7 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
-import com.ers.models.User;
+import com.ers.models.UserInfo;
 import com.ers.services.UserService;
 
 @RestController
@@ -36,13 +36,13 @@ public class UserController {
 	
 //	Send paginated users. Page parameter is optional.
 	@GetMapping
-	public Page<User> requestAllUsers(@RequestParam Optional<Integer> page) {
+	public Page<UserInfo> requestAllUsers(@RequestParam Optional<Integer> page) {
 		return this.userService.getAllUsers(page);
 	}
 	
 	@GetMapping("/user/{id}")
-	public User requestUserInformation(@PathVariable int id) {
-		User foundUser;
+	public UserInfo requestUserInformation(@PathVariable int id) {
+		UserInfo foundUser;
 		try {
 			foundUser = this.userService.getUserById(id);
 			return foundUser;
@@ -53,7 +53,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/create")
-	public HttpEntity<String> registerNewUser(@RequestBody User newUser) {
+	public HttpEntity<String> registerNewUser(@RequestBody UserInfo newUser) {
 		try {
 			this.userService.registerUser(newUser);
 		} catch (EmailInUseException e) {
@@ -64,7 +64,7 @@ public class UserController {
 	}
 	
 	@PutMapping("/update")
-	public HttpEntity<String> updateUserInfo(@RequestBody User updatedUser) {
+	public HttpEntity<String> updateUserInfo(@RequestBody UserInfo updatedUser) {
 		try {
 			this.userService.updateUser(updatedUser);
 		} catch (UserNotFoundException e) {
