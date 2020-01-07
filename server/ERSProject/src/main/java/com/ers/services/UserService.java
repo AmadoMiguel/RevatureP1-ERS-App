@@ -1,18 +1,23 @@
 package com.ers.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
+import com.ers.exceptions.UsernameInUseException;
 import com.ers.models.UserInfo;
 import com.ers.repositories.UserRepository;
 
@@ -25,21 +30,27 @@ public class UserService implements UserDetailsService {
 		this.userRepository = userRepository;
 	}
 	
-//	Send paginated users information
+//	Send paginated users information. Default value of 5 users per page.
+//	Default page value: 5.
 	public Page<UserInfo> getAllUsers(Optional<Integer> page) {
 		Pageable pageable = PageRequest.of(page.orElse(0), 5);
 		return this.userRepository.findAll(pageable);
 	}
 	
-//	Get user details for authentication
+//	Get user details for authentication. This method is called by the security configure class
+//	class
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 		Optional<UserInfo> foundUser = this.userRepository.findByUsername(username);
 		if (foundUser.isPresent()) {
-			return foundUser.get();
+			List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+			authorities.add(new SimpleGrantedAuthority(foundUser.get().getRole().getName()));
+			User user = new User(foundUser.get().getUsername(), 
+					foundUser.get().getPassword(), authorities);
+			return user;
 		}
 		else {
-			throw new UsernameNotFoundException("User not found in the system.");
+			return null;
 		}
 	}
 	
@@ -53,32 +64,62 @@ public class UserService implements UserDetailsService {
 	}
 	
 	public Optional<UserInfo> findUserByEmail(String email) {
-		return this.findUserByEmail(email);
+		return this.userRepository.findByEmail(email);
 	}
 	
-	public UserInfo registerUser(UserInfo newUser) throws EmailInUseException {
-//		Check that email is not in the database
+	public Optional<UserInfo> findUserByUsername(String username) {
+		return this.userRepository.findByUsername(username);
+	}
+	
+	public UserInfo registerUser(UserInfo newUser) throws EmailInUseException, 
+	UsernameInUseException {
+//		Check that email and username are not in the database
 		Optional<UserInfo> otherUser = findUserByEmail(newUser.getEmail());
 		if (otherUser.isPresent()) {
 			throw new EmailInUseException("Email already in use.");
+		}
+		otherUser = this.findUserByUsername(newUser.getUsername());
+		if (otherUser.isPresent()) {
+			throw new UsernameInUseException("Username already in use.");
 		}
 		return this.userRepository.save(newUser);
 	}
 	
 	public UserInfo updateUser(UserInfo newUserInfo) throws UserNotFoundException,
-	EmailInUseException {
-		UserInfo userToUpdate = getUserById(newUserInfo.getId());
-		if (userToUpdate != null) {
-//			Now check if the new email in the updated user info is not in use
-			Optional<UserInfo> userWithSameEmail = findUserByEmail(userToUpdate.getEmail());
+	EmailInUseException, UsernameInUseException {
+		try {
+			UserInfo userToUpdate = getUserById(newUserInfo.getId());
+//			Check if the new email in the updated user info is not in use
+			Optional<UserInfo> userWithSameEmail = findUserByEmail(newUserInfo.getEmail());
 			if (userWithSameEmail.isPresent()) {
 				throw new EmailInUseException("Email already in use.");
 			}
-			return this.userRepository.save(newUserInfo);
-		} else {
-//			In case user is not in the database
-			throw new UserNotFoundException("User with id "+newUserInfo.getId()+" not found.");
-		}	
+//			Check if the new username in the updated user info is not in use
+			Optional<UserInfo> userWithSameUsername = 
+					this.findUserByUsername(newUserInfo.getUsername());
+			if (userWithSameUsername.isPresent()) {
+				throw new UsernameInUseException("Username already in use.");
+			}
+//			Compare fields and udpate where not null
+			if (newUserInfo.getFirstName() != null) {
+				userToUpdate.setFirstName(newUserInfo.getFirstName());
+			}
+			if (newUserInfo.getLastName() != null) {
+				userToUpdate.setLastName(newUserInfo.getLastName());
+			}
+			if (newUserInfo.getEmail() != null) {
+				userToUpdate.setEmail(newUserInfo.getEmail());
+			}
+			if (newUserInfo.getRole() != null) {
+				userToUpdate.setRole(newUserInfo.getRole());
+			}
+			if (newUserInfo.getPassword() != null) {
+				userToUpdate.setPassword(newUserInfo.getPassword());
+			}
+			return this.userRepository.save(userToUpdate);
+		} catch(UserNotFoundException e) {
+			throw e;
+		}
 	}
 	
 	public void deleteUser(int userId) throws UserNotFoundException {

@@ -11,6 +11,6 @@ import com.ers.models.UserInfo;
 @Repository
 public interface UserRepository extends JpaRepository<UserInfo, Integer> {
 	Page<UserInfo> findAll(Pageable pageable);
-	Optional<UserInfo> findUserByEmail(String email);
+	Optional<UserInfo> findByEmail(String email);
 	Optional<UserInfo> findByUsername(String username);
 }

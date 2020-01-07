@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +22,16 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
+import com.ers.exceptions.UsernameInUseException;
+import com.ers.models.UserCredentials;
 import com.ers.models.UserInfo;
 import com.ers.services.UserService;
+import com.ers.util.JWTUtil;
 
 @RestController
 @RequestMapping("/ers/users")
 public class UserController {
+	
 	private UserService userService;
 	
 	@Autowired
@@ -34,13 +39,16 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	@Autowired
+	private JWTUtil jwtUtil;
+	
 //	Send paginated users. Page parameter is optional.
-	@GetMapping
+	@GetMapping("/info")
 	public Page<UserInfo> requestAllUsers(@RequestParam Optional<Integer> page) {
 		return this.userService.getAllUsers(page);
 	}
 	
-	@GetMapping("/user/{id}")
+	@GetMapping("/info/{id}")
 	public UserInfo requestUserInformation(@PathVariable int id) {
 		UserInfo foundUser;
 		try {
@@ -52,11 +60,27 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/create")
+	@PostMapping("/login")
+	public ResponseEntity<UserDetails> loginUser(@RequestBody UserCredentials userCredentials) {
+		UserDetails userInfo = this.userService
+				.loadUserByUsername(userCredentials.getUsername());
+		if (userInfo == null) {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+					"Username not found.");
+		}
+		
+//		final String jwt = jwtUtil.generateToken(userInfo);
+		return ResponseEntity.ok(userInfo);
+	}
+	
+	@PostMapping("/register")
 	public HttpEntity<String> registerNewUser(@RequestBody UserInfo newUser) {
 		try {
 			this.userService.registerUser(newUser);
 		} catch (EmailInUseException e) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+					e.getMessage());
+		} catch (UsernameInUseException e) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
 					e.getMessage());
 		}
@@ -73,6 +97,9 @@ public class UserController {
 		} catch (EmailInUseException e) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
 					e.getMessage());
+		} catch (UsernameInUseException e) {
+			 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, 
+					 e.getMessage());
 		}
 		return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
 	}

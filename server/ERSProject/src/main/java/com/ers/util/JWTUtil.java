@@ -16,8 +16,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 // Jwt configuration for user authentication/authorization
 @Service
 public class JWTUtil {
+	
 //	Key to activate jwt generation
-	private String secretKey = System.getenv("SECRET_KEY");
+	private String secretKey = System.getenv("SECRET_JWT_KEY");
 	
 	private String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);

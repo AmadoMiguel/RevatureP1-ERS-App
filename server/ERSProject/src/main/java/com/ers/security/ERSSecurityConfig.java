@@ -30,21 +30,28 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 	private UserService userService;
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		http
-//		.httpBasic().disable()
-//		.csrf().disable()
-//		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//		.and()
-//		.authorizeRequests()
-//		.antMatchers(HttpMethod.GET, "/ers/users").hasAnyRole()
-//		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll();
-		
 //		Spring security will call the service in order to authenticate the user
 //		It will call the loadUserByUsername method on the service
 		auth.userDetailsService(userService);
 		
 //		After JWT is configured, apply it here
 	}
+	
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http
+		.httpBasic().disable()
+		.csrf().disable()
+		.cors().disable()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
+		.authorizeRequests()
+//		.anyRequest().authenticated()
+		.antMatchers(HttpMethod.GET, "/ers/users").authenticated()
+		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll()
+		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll();
+	}
+	
 	
 	@SuppressWarnings("deprecation")
 	@Bean

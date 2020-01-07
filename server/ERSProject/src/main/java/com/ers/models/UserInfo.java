@@ -1,9 +1,6 @@
 package com.ers.models;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,15 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 @Entity
 @Table(name= "users")
-public class UserInfo extends User {
-	private static final long serialVersionUID = 1L;
+public class UserInfo {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -41,19 +33,15 @@ public class UserInfo extends User {
 	@Column(nullable= false, unique= true)
 	private String email;
 	
-	@Transient
-	private static Collection<? extends GrantedAuthority> authorities = 
-	new ArrayList<GrantedAuthority>();
-	
 //	Multiplicity with Role entity
 	@ManyToOne
 	@JoinColumn(name= "role_id", nullable= false)
 	private Role role;
 
-	public UserInfo(int id, String password, String firstName, String lastName, String email, 
-			Role role) {
-		super(email, email, authorities);
-		this.id = id;
+	public UserInfo(String username, String password,String firstName, 
+			String lastName, String email, Role role) {
+		super();
+		this.username = username;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -61,16 +49,24 @@ public class UserInfo extends User {
 		this.role = role;
 	}
 	
-	public UserInfo(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, authorities);
+	public UserInfo() {
+		super();
 	}
-
+	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -115,9 +111,9 @@ public class UserInfo extends User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", password=" + password + ", firstName=" + firstName 
-				+ ", lastName=" + lastName
-				+ ", email=" + email + ", role=" + role + "]";
+		return "UserInfo [id=" + id + ", username=" + username + ", password=" + password + 
+				", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + 
+				", role=" + role + "]";
 	}
 	
 }
