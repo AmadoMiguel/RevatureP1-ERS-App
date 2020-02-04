@@ -1,5 +1,6 @@
 package com.ers.controllers;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,10 +25,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
 import com.ers.exceptions.UsernameInUseException;
+import com.ers.models.ClientInfo;
 import com.ers.models.UserCredentials;
 import com.ers.models.UserInfo;
 import com.ers.services.UserService;
 import com.ers.util.JWTUtil;
+
+import io.jsonwebtoken.Claims;
 
 @RestController
 @RequestMapping("/ers/users")
@@ -61,16 +66,20 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<UserDetails> loginUser(@RequestBody UserCredentials userCredentials) {
+	public ResponseEntity<ClientInfo> loginUser(@RequestBody UserCredentials userCredentials) {
 		UserDetails userInfo = this.userService
 				.loadUserByUsername(userCredentials.getUsername());
 		if (userInfo == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
 					"Username not found.");
 		}
-		
-//		final String jwt = jwtUtil.generateToken(userInfo);
-		return ResponseEntity.ok(userInfo);
+		ArrayList<String> authorities = new ArrayList<String>();
+		for (GrantedAuthority auth : userInfo.getAuthorities()) {
+			authorities.add(auth.getAuthority());
+		}
+		final String jwt = jwtUtil.generateToken(userInfo);
+		ClientInfo info = new ClientInfo(userInfo.getUsername(), authorities.get(0), jwt);
+		return ResponseEntity.ok(info);
 	}
 	
 	@PostMapping("/register")

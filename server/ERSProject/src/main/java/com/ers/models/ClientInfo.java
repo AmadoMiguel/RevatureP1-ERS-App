@@ -1,57 +1,40 @@
 package com.ers.models;
 
 public class ClientInfo {
-	private int id;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private Role role;
 	
-	public ClientInfo(int id, String firstName, String lastName, String email, Role role) {
+	private String username;
+	private String role;
+	private String jwt;
+	
+	public ClientInfo(String username, String role, String jwt) {
 		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
+		this.username = username;
 		this.role = role;
+		this.jwt = jwt;
 	}
-	public ClientInfo() {
-		super();
+	
+	public String getUsername() {
+		return username;
 	}
-	public int getId() {
-		return id;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
+	public String getJwt() {
+		return jwt;
+	}
+	public void setJwt(String jwt) {
+		this.jwt = jwt;
+	}
+	
 	@Override
 	public String toString() {
-		return "ClientInfo [id=" + id + ", firstName=" + firstName + ", lastName=" 
-	+ lastName + ", email=" + email + ", role=" + role + "]";
+		return "ClientInfo [username=" + username + ", role=" + role + ", jwt=" + jwt + "]";
 	}
 
 }

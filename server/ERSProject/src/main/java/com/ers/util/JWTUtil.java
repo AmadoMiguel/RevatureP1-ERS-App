@@ -1,10 +1,17 @@
 package com.ers.util;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.ers.models.UserInfo;
@@ -20,8 +27,18 @@ public class JWTUtil {
 //	Key to activate jwt generation
 	private String secretKey = System.getenv("SECRET_JWT_KEY");
 	
-	private String extractUsername(String token) {
+	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
+	}
+	
+	public ArrayList<String> extractRoles(String token) {
+		return (ArrayList<String>) extractClaim(token, new Function<Claims, ArrayList<String>>() {
+			@SuppressWarnings("unchecked")
+			@Override
+			public ArrayList<String> apply(Claims t) {
+				return t.get("roles", ArrayList.class);
+			}
+		});
 	}
 	
 	private Date getTokenExpirationDate(String token) {
@@ -42,11 +59,15 @@ public class JWTUtil {
 		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 	}
 	
-	
-	public String generateToken(UserInfo userInfo) {
+	public String generateToken(UserDetails userInfo) {
 		Map<String, Object> claims = new HashMap<>();
-//		Role to determine if current user can access to certain info
-		claims.put("role", userInfo.getRole().getName());
+//		Roles to determine if current user can access to certain info
+		ArrayList<String> authorities = new ArrayList<String>();
+		for (GrantedAuthority auth: userInfo.getAuthorities()) {
+			authorities.add(auth.getAuthority());
+		}
+//		For the purpose of this project, each user has only one role
+		claims.put("roles", authorities.get(0));
 		return createToken(claims, userInfo.getUsername());
 	}
 	
@@ -57,7 +78,7 @@ public class JWTUtil {
 				.signWith(SignatureAlgorithm.HS256, secretKey).compact();
 	}
 	
-	public Boolean validateToken(String token, UserInfo userInfo) {
+	public Boolean validateToken(String token, UserDetails userInfo) {
 		final String username = extractUsername(token);
 		return (username.equals(userInfo.getUsername()) && !isTokenExpired(token));
 	}
