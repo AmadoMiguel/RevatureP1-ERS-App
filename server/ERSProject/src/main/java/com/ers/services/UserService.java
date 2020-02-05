@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ers.exceptions.EmailInUseException;
@@ -32,6 +33,7 @@ public class UserService implements UserDetailsService {
 	
 //	Send paginated users information. Default value of 5 users per page.
 //	Default page value: 5.
+//	Users can be retrieved with/without filters on their properties
 	public Page<UserInfo> getAllUsers(Optional<Integer> page) {
 		Pageable pageable = PageRequest.of(page.orElse(0), 5);
 		return this.userRepository.findAll(pageable);
@@ -107,19 +109,24 @@ public class UserService implements UserDetailsService {
 			if (newUserInfo.getLastName() != null) {
 				userToUpdate.setLastName(newUserInfo.getLastName());
 			}
+			if (newUserInfo.getUsername() != null) {
+				userToUpdate.setUsername(newUserInfo.getUsername());
+			}
 			if (newUserInfo.getEmail() != null) {
 				userToUpdate.setEmail(newUserInfo.getEmail());
 			}
 			if (newUserInfo.getRole() != null) {
 				userToUpdate.setRole(newUserInfo.getRole());
 			}
-			if (newUserInfo.getPassword() != null) {
-				userToUpdate.setPassword(newUserInfo.getPassword());
-			}
 			return this.userRepository.save(userToUpdate);
 		} catch(UserNotFoundException e) {
 			throw e;
 		}
+	}
+	
+//	The possible errors are checked in the controller
+	public void updatePassword(UserInfo user) {
+		this.userRepository.save(user);
 	}
 	
 	public void deleteUser(int userId) throws UserNotFoundException {

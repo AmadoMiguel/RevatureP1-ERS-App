@@ -10,13 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +29,10 @@ import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
 import com.ers.exceptions.UsernameInUseException;
 import com.ers.models.ClientInfo;
+import com.ers.models.PassEncoder;
 import com.ers.models.UserCredentials;
 import com.ers.models.UserInfo;
+import com.ers.models.UserPasswords;
 import com.ers.services.UserService;
 import com.ers.util.JWTUtil;
 
@@ -45,11 +50,19 @@ public class UserController {
 	}
 	
 	@Autowired
+	private PassEncoder passEncoder;
+	
+	@Autowired
 	private JWTUtil jwtUtil;
 	
 //	Send paginated users. Page parameter is optional.
 	@GetMapping("/info")
-	public Page<UserInfo> requestAllUsers(@RequestParam Optional<Integer> page) {
+	public Page<UserInfo> requestAllUsers(
+			@RequestParam Optional<Integer> page,
+//			Filter options for searching users
+			@RequestParam Optional<String> firstNameLike,
+			@RequestParam Optional<Integer> lastNameLike,
+			@RequestParam Optional<Integer> usernameLike) {
 		return this.userService.getAllUsers(page);
 	}
 	
@@ -73,6 +86,10 @@ public class UserController {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
 					"Username not found.");
 		}
+		if (! passEncoder.matches(userCredentials.getPassword(), userInfo.getPassword())) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+					"Incorrect Password.");
+		}
 		ArrayList<String> authorities = new ArrayList<String>();
 		for (GrantedAuthority auth : userInfo.getAuthorities()) {
 			authorities.add(auth.getAuthority());
@@ -85,6 +102,8 @@ public class UserController {
 	@PostMapping("/register")
 	public HttpEntity<String> registerNewUser(@RequestBody UserInfo newUser) {
 		try {
+//			Hash password before storing user
+			newUser.setPassword(passEncoder.encode(newUser.getPassword()));
 			this.userService.registerUser(newUser);
 		} catch (EmailInUseException e) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
@@ -111,6 +130,30 @@ public class UserController {
 					 e.getMessage());
 		}
 		return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
+	}
+	
+//	Only current user can change its own password. But has to provide previous password
+//	before updating it.
+	@PatchMapping("/update/password")
+	public HttpEntity<String> changePassword(@RequestBody UserPasswords passwords,
+			@RequestHeader("Authorization") String jwt) {
+		String username = this.jwtUtil.extractUsername(jwt);
+		Optional<UserInfo> currentUser = this.userService.findUserByUsername(username);
+		if (currentUser.isPresent()) {
+//			Check passwords
+			if (!passEncoder.matches(passwords.getOldPassword(), currentUser.get().getPassword())) {
+				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+						"Incorrect password provided.");
+			}
+//			Hash new password and save user
+			UserInfo updatedUser = currentUser.get();
+			updatedUser.setPassword(passEncoder.encode(updatedUser.getPassword()));
+			this.userService.updatePassword(updatedUser);
+			return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
+		} else {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+					"Username not found.");
+		}
 	}
 	
 	@DeleteMapping("/{id}")

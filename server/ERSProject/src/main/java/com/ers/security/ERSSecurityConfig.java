@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -20,7 +21,6 @@ import com.ers.util.JwtRequestFilter;
 @Configuration
 @EnableWebSecurity
 public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
-//	TODO: Configure JWT token and inject it here
 	
 	@Bean
 	@Override
@@ -38,14 +38,14 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		Spring security will call the service in order to authenticate the user
 //		It will call the loadUserByUsername method on the service
-		auth.userDetailsService(userService);
+		auth.userDetailsService(userService)
+		.passwordEncoder(passwordEncoder());
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		.httpBasic().disable()
-//		.authenticationEntryPoint(authenticationEntryPoint)
 		.csrf().disable()
 		.cors().disable()
 //		Used to avoid creating sessions. Instead, each request is filtered separately.
@@ -54,6 +54,9 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 //		.anyRequest().authenticated()
 		.antMatchers(HttpMethod.GET, "/ers/users/info").hasAnyAuthority("admin", "finance")
+//		Only admins can modify-delete users info
+		.antMatchers(HttpMethod.PUT, "/ers/users/*").hasAuthority("admin")
+		.antMatchers(HttpMethod.DELETE, "/ers/users/*").hasAuthority("admin")
 		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll()
 		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll();
 //		Use jwt filter before every request to intercept and check user authorities
@@ -61,10 +64,9 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
+		return new BCryptPasswordEncoder();
 	}
 
 }
