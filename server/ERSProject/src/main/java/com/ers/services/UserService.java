@@ -8,12 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ers.exceptions.EmailInUseException;
@@ -34,8 +35,39 @@ public class UserService implements UserDetailsService {
 //	Send paginated users information. Default value of 5 users per page.
 //	Default page value: 5.
 //	Users can be retrieved with/without filters on their properties
-	public Page<UserInfo> getAllUsers(Optional<Integer> page) {
+	public Page<UserInfo> getAllUsers(
+			Optional<Integer> page,
+			Optional<String[]> sortOrders,
+			Optional<String> firstNameLike,
+			Optional<String> lastNameLike,
+			Optional<String> emailLike,
+			Optional<String> usernameLike) {
 		Pageable pageable = PageRequest.of(page.orElse(0), 5);
+		if (sortOrders.isPresent()) {
+			List<Order> orderByOptions = new ArrayList<Order>();
+			for (String ord: sortOrders.get()) {
+				orderByOptions.add(Order.by(ord));
+			}
+			if (!orderByOptions.isEmpty()) {
+				Sort sortOption = Sort.by(orderByOptions);
+				pageable = PageRequest.of(page.orElse(0), 5, sortOption);
+			}
+		}
+//		Handle each filtering option to call specific query. For now, the only combined parameters to
+//		filter at the same time will be first name and last name
+		if (firstNameLike.isPresent() && lastNameLike.isPresent())
+			return this.userRepository.usersWithFirstNameAndLastNameLike(
+					firstNameLike.get(), lastNameLike.get(), pageable);
+		if (firstNameLike.isPresent())
+			return this.userRepository.usersWithFirstNameLike(firstNameLike.get(), pageable);
+		if (lastNameLike.isPresent())
+			return this.userRepository.usersWithLastNameLike(lastNameLike.get(), pageable);
+		if (emailLike.isPresent())
+			return this.userRepository.usersWithEmailLike(emailLike.get(), pageable);
+		if (usernameLike.isPresent())
+			return this.userRepository.usersWithUsernameLike(usernameLike.get(), pageable);
+		
+//		Default query without filtering applied
 		return this.userRepository.findAll(pageable);
 	}
 	

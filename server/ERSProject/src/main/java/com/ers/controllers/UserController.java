@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +35,6 @@ import com.ers.models.UserPasswords;
 import com.ers.services.UserService;
 import com.ers.util.JWTUtil;
 
-import io.jsonwebtoken.Claims;
-
 @RestController
 @RequestMapping("/ers/users")
 public class UserController {
@@ -58,12 +55,14 @@ public class UserController {
 //	Send paginated users. Page parameter is optional.
 	@GetMapping("/info")
 	public Page<UserInfo> requestAllUsers(
-			@RequestParam Optional<Integer> page,
+			@RequestParam("page") Optional<Integer> page,
+			@RequestParam("sortOrders") Optional<String[]> sortOrders,
 //			Filter options for searching users
-			@RequestParam Optional<String> firstNameLike,
-			@RequestParam Optional<Integer> lastNameLike,
-			@RequestParam Optional<Integer> usernameLike) {
-		return this.userService.getAllUsers(page);
+			@RequestParam("firstName") Optional<String> firstNameLike,
+			@RequestParam("lastName") Optional<String> lastNameLike,
+			@RequestParam("email") Optional<String> emailLike,
+			@RequestParam("username") Optional<String> usernameLike) {
+		return this.userService.getAllUsers(page, sortOrders, firstNameLike, lastNameLike, emailLike, usernameLike);
 	}
 	
 	@GetMapping("/info/{id}")
@@ -147,7 +146,7 @@ public class UserController {
 			}
 //			Hash new password and save user
 			UserInfo updatedUser = currentUser.get();
-			updatedUser.setPassword(passEncoder.encode(updatedUser.getPassword()));
+			updatedUser.setPassword(passEncoder.encode(passwords.getNewPassword()));
 			this.userService.updatePassword(updatedUser);
 			return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
 		} else {
@@ -167,6 +166,7 @@ public class UserController {
 		}
 	}
 	
+//	Controller-level exception handler
 	@ExceptionHandler
 	public ResponseEntity<String> errorHandler(HttpClientErrorException ex) {
 		return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
