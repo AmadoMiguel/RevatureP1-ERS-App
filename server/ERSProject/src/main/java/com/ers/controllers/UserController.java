@@ -66,14 +66,30 @@ public class UserController {
 	}
 	
 	@GetMapping("/info/{id}")
-	public UserInfo requestUserInformation(@PathVariable int id) {
-		UserInfo foundUser;
-		try {
-			foundUser = this.userService.getUserById(id);
-			return foundUser;
-		} catch (UserNotFoundException e) {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-					e.getMessage());
+	public UserInfo requestUserInformation(@PathVariable int id,
+			@RequestHeader("Authorization") Optional<String> jwt) {
+//		Check that current user asks for his/her info. Other users info is not visible
+//		to current user, except for administrators.
+		if (jwt.isPresent()) {
+			String username = this.jwtUtil.extractUsername(jwt.get());
+			ArrayList<String> roles = this.jwtUtil.extractRoles(jwt.get());
+			String authority = roles.get(0);
+			Optional<UserInfo> currUser = this.userService.findUserByUsername(username);
+			if (currUser.isPresent()) {
+//				Check if IDs match or if current user is admin
+				if (currUser.get().getId() == id || authority.equals("admin")) {
+					return currUser.get();
+				} else {
+					throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED,
+							"Unauthorized.");
+				}
+			} else {
+				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+						"Current User not found in the system");
+			}
+		} else {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+					"Authorization header is empty");
 		}
 	}
 	
