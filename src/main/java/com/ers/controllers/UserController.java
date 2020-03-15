@@ -184,8 +184,8 @@ public class UserController {
 					this.userService.deleteUser(id);
 					return new HttpEntity<String>(HttpStatus.NO_CONTENT.toString());
 				} else {
-					throw new HttpClientErrorException(HttpStatus.FORBIDDEN,
-							"Unathorized for this operation.");
+					throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED,
+							"Can't delete other user's account.");
 				}
 			} else {
 				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,

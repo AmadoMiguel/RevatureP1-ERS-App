@@ -35,7 +35,7 @@ public class Reimbursement {
 	private UserInfo author;
 	
 	@ManyToOne
-	@JoinColumn(name= "resolver_id", nullable= false)
+	@JoinColumn(name= "resolver_id", nullable= true)
 	private UserInfo resolver;
 	
 	@ManyToOne
@@ -45,7 +45,7 @@ public class Reimbursement {
 	@Column(nullable= false)
 	private LocalDate dateSubmitted;
 	
-	@Column(nullable= false)
+	@Column(nullable= true)
 	private LocalDate dateResolved;
 
 	public Reimbursement(int id, double amount, String description, ReimbursementType type, 
@@ -141,7 +141,7 @@ public class Reimbursement {
 
 	@Override
 	public String toString() {
-		return "Reimbursement [id=" + id + ", amount=" + amount + ", description=" 
+		return "Reimbursement [id=" + id + ", amount=" + amount + ", description="
 	+ description + ", type=" + type.toString() + ", author=" + author.toString() +
 	", resolver=" + resolver.toString() + ", status=" + status.toString() + 
 	", dateSubmitted=" + dateSubmitted.toString() + ", dateResolved=" + dateResolved + "]";

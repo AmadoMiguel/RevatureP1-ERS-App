@@ -59,7 +59,8 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll()
 		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll()
 		.antMatchers(HttpMethod.GET, "/ers/reimbursements/status/*").hasAuthority("finance")
-		.antMatchers(HttpMethod.POST, "/ers/reimbursements/*").hasAuthority("user");
+		.antMatchers(HttpMethod.POST, "/ers/reimbursements/*").hasAuthority("user")
+		.antMatchers(HttpMethod.PATCH, "/ers/reimbursements/*").hasAuthority("finance");
 //		Use jwt filter before every request to intercept and check user authorities
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}

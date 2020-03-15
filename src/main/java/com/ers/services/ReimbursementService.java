@@ -17,14 +17,23 @@ public class ReimbursementService {
 	@Autowired
 	private ReimbursementRepository reimbRepo;
 	
+	public Optional<Reimbursement> findById(int id) {
+		Optional<Reimbursement> foundReimb = this.reimbRepo.findById(id);
+		return foundReimb;
+	}
+	
 	public Page<Reimbursement> findByStatusId(Optional<Integer> pageNum, int statusId) {
 		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
-		return this.reimbRepo.findByStatusId(page);
+		return this.reimbRepo.findByStatusId(page, statusId);
 	}
 	
 	public Page<Reimbursement> findByAuthorId(Optional<Integer> pageNum, int authorId) {
 		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
-		return this.reimbRepo.findByAuthorId(page);
+		return this.reimbRepo.findByAuthorId(page, authorId);
+	}
+	
+	public void saveReimbursement(Reimbursement reimb) {
+		this.reimbRepo.save(reimb);
 	}
 	
 }
