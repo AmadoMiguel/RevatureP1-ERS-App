@@ -113,7 +113,7 @@ public class UserInfo {
 	public String toString() {
 		return "UserInfo [id=" + id + ", username=" + username + ", password=" + password + 
 				", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + 
-				", role=" + role + "]";
+				", role=" + role.toString() + "]";
 	}
 	
 }

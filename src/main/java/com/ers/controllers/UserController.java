@@ -52,7 +52,7 @@ public class UserController {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-//	Send paginated users. Page parameter is optional.
+//	Send paginated users
 	@GetMapping("/info")
 	public Page<UserInfo> requestAllUsers(
 			@RequestParam("page") Optional<Integer> page,
@@ -172,10 +172,25 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public HttpEntity<String> removeUser(@PathVariable int id) {
+	public HttpEntity<String> removeUser(
+			@PathVariable int id,
+			@RequestHeader String jwt) {
 		try {
-			this.userService.deleteUser(id);
-			return new HttpEntity<String>(HttpStatus.NO_CONTENT.toString());
+//			Only current user can delete her/his account
+			String username = this.jwtUtil.extractUsername(jwt);
+			Optional<UserInfo> currentUser = this.userService.findUserByUsername(username);
+			if (currentUser.isPresent()) {
+				if (currentUser.get().getId() == id) {
+					this.userService.deleteUser(id);
+					return new HttpEntity<String>(HttpStatus.NO_CONTENT.toString());
+				} else {
+					throw new HttpClientErrorException(HttpStatus.FORBIDDEN,
+							"Unathorized for this operation.");
+				}
+			} else {
+				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+						"Username not found.");
+			}
 		} catch(UserNotFoundException e) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
 					e.getMessage());

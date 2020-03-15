@@ -142,9 +142,9 @@ public class Reimbursement {
 	@Override
 	public String toString() {
 		return "Reimbursement [id=" + id + ", amount=" + amount + ", description=" 
-	+ description + ", type=" + type + ", author=" + author + ", resolver=" + resolver 
-	+ ", status=" + status + ", dateSubmitted=" + dateSubmitted + ", dateResolved=" 
-	+ dateResolved + "]";
+	+ description + ", type=" + type.toString() + ", author=" + author.toString() +
+	", resolver=" + resolver.toString() + ", status=" + status.toString() + 
+	", dateSubmitted=" + dateSubmitted.toString() + ", dateResolved=" + dateResolved + "]";
 	}
 	
 }

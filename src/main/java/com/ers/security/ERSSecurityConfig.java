@@ -56,12 +56,12 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(HttpMethod.GET, "/ers/users/info").hasAnyAuthority("admin", "finance")
 //		Only admins can modify-delete users info
 		.antMatchers(HttpMethod.PUT, "/ers/users/*").hasAuthority("admin")
-		.antMatchers(HttpMethod.DELETE, "/ers/users/*").hasAuthority("admin")
 		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll()
-		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll();
+		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll()
+		.antMatchers(HttpMethod.GET, "/ers/reimbursements/status/*").hasAuthority("finance")
+		.antMatchers(HttpMethod.POST, "/ers/reimbursements/*").hasAuthority("user");
 //		Use jwt filter before every request to intercept and check user authorities
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-		
 	}
 	
 	@Bean
