@@ -1,6 +1,5 @@
 package com.ers.controllers;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.ers.exceptions.ReimbursementNotFoundException;
 import com.ers.models.Reimbursement;
 import com.ers.models.UserInfo;
 import com.ers.services.ReimbursementService;
@@ -50,9 +50,16 @@ public class ReimbursementController {
 	public Page<Reimbursement> getReimbursementsByStatusId(
 			@PathVariable int statusId,
 			@RequestParam("page") Optional<Integer> pageNum,
-			@RequestParam("startDate") Optional<LocalDate> from,
-			@RequestParam("endDate") Optional<LocalDate> to) {
-		
+			@RequestParam("startDate") Optional<String> submittedStart,
+			@RequestParam("endDate") Optional<String> submittedEnd) {
+		if (submittedStart.isPresent() && submittedEnd.isPresent()) {
+			try {
+				return this.reimbService.findByStatusIdAndDateSubmitted(pageNum, statusId, 
+						submittedStart.get(), submittedEnd.get());
+			} catch (Exception e) {
+				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+			}
+		}
 		return this.reimbService.findByStatusId(pageNum, statusId);
 	}
 	
@@ -61,8 +68,8 @@ public class ReimbursementController {
 			@PathVariable int authorId,
 			@RequestHeader("Authorization") Optional<String> jwt,
 			@RequestParam("page") Optional<Integer> pageNum,
-			@RequestParam("startDate") Optional<LocalDate> from,
-			@RequestParam("endDate") Optional<LocalDate> to) {
+			@RequestParam("startDate") Optional<String> from,
+			@RequestParam("endDate") Optional<String> to) {
 		if (jwt.isPresent()) {
 			String jwtContent = jwt.get();
 			String username = this.jwtUtil.extractUsername(jwtContent);
@@ -92,7 +99,6 @@ public class ReimbursementController {
 		}
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@PostMapping("/create")
 	public HttpEntity<String> createReimbursement(
 			@RequestBody Reimbursement reimbursement,
@@ -118,14 +124,15 @@ public class ReimbursementController {
 		}
 	}
 	
-	@PatchMapping
+	@PatchMapping("/update")
 	public HttpEntity<String> updateReimbursement(@RequestBody Reimbursement reimb) {
-		Optional<Reimbursement> foundReimb = this.reimbService.findById(reimb.getId());
-		if (foundReimb.isPresent()) {
-			this.reimbService.saveReimbursement(foundReimb.get());
+		try {
+			this.reimbService.updateReimbursement(reimb);
 			return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
+		} catch (ReimbursementNotFoundException e) {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+					e.getMessage());
 		}
-		throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Reimbursement not found");
 	}
 	
 	@ExceptionHandler
