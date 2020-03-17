@@ -17,8 +17,8 @@ public interface ReimbursementRepository extends JpaRepository<Reimbursement, In
 	
 //	Support filtering reimbursements within certain dates
 	
-//	@Query(value= "select * from ers.reimbursements where "
-//			+ "ers.reimbursements.status_id = $1", nativeQuery= true)
 	Page<Reimbursement> findByStatusIdAndDateSubmittedBetween(int statusId, LocalDate dateSubmittedStart, 
+			LocalDate dateSubmittedEnd, Pageable reimbPageable);
+	Page<Reimbursement> findByAuthorIdAndDateSubmittedBetween(int authorId, LocalDate dateSubmittedStart, 
 			LocalDate dateSubmittedEnd, Pageable reimbPageable);
 }

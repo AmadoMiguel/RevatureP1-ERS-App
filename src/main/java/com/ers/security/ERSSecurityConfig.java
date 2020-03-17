@@ -54,7 +54,6 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 //		.anyRequest().authenticated()
 		.antMatchers(HttpMethod.GET, "/ers/users/info").hasAnyAuthority("admin", "finance")
-//		Only admins can modify-delete users info
 		.antMatchers(HttpMethod.PUT, "/ers/users/*").hasAuthority("admin")
 		.antMatchers(HttpMethod.POST, "/ers/users/register").permitAll()
 		.antMatchers(HttpMethod.POST, "/ers/users/login").permitAll()

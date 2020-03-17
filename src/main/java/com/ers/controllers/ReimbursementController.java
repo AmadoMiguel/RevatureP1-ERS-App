@@ -1,5 +1,6 @@
 package com.ers.controllers;
 
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -43,8 +44,7 @@ public class ReimbursementController {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-//	TODO: Add request parameters in both get statements in order to be able
-//	to search reimbursements within a date range
+//	TODO: apply sorting for both get requests
 	
 	@GetMapping("/status/{statusId}")
 	public Page<Reimbursement> getReimbursementsByStatusId(
@@ -52,15 +52,11 @@ public class ReimbursementController {
 			@RequestParam("page") Optional<Integer> pageNum,
 			@RequestParam("startDate") Optional<String> submittedStart,
 			@RequestParam("endDate") Optional<String> submittedEnd) {
-		if (submittedStart.isPresent() && submittedEnd.isPresent()) {
-			try {
-				return this.reimbService.findByStatusIdAndDateSubmitted(pageNum, statusId, 
-						submittedStart.get(), submittedEnd.get());
-			} catch (Exception e) {
-				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
-			}
+		try {
+			return this.reimbService.findByStatusId(pageNum, statusId, submittedStart, submittedEnd);
+		} catch (DateTimeException e) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
-		return this.reimbService.findByStatusId(pageNum, statusId);
 	}
 	
 	@GetMapping("/author/{authorId}")
@@ -78,25 +74,24 @@ public class ReimbursementController {
 //				1st possible access: Current user is requesting her/his reimbursements
 //				information
 				if (currUser.get().getId() == authorId) {
-					return this.reimbService.findByAuthorId(pageNum, authorId);
+					try {
+						return this.reimbService.findByAuthorId(pageNum, authorId, from, to);
+					} catch (DateTimeException e) {
+						throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+					}
 				} else {
 //					2nd possible access: Current user has finance role
-					ArrayList<String> roles = this.jwtUtil.extractRoles(jwtContent);
-					if (roles.get(0).equals("finance")) {
-						return  this.reimbService.findByAuthorId(pageNum, authorId);
-					} else {
-						throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED,
-								"Unauthorized.");
-					}
+					String role = this.jwtUtil.extractRole(jwtContent);
+					if (role.equals("finance")) {
+						try {
+							return this.reimbService.findByAuthorId(pageNum, authorId, from, to);
+						} catch (DateTimeException e) {
+							throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+						}
+					} else throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Unauthorized.");
 				}
-			} else {
-				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-						"Username not found.");
-			}
-		} else {
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-					"Please login first.");
-		}
+			} else throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Username not found.");
+		} else throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Please login first.");
 	}
 	
 	@PostMapping("/create")

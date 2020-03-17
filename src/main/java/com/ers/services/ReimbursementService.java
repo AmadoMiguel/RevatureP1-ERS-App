@@ -1,6 +1,8 @@
 package com.ers.services;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +21,10 @@ public class ReimbursementService {
 	@Autowired
 	private ReimbursementRepository reimbRepo;
 	
-	public Optional<Reimbursement> findById(int id) {
-		Optional<Reimbursement> foundReimb = this.reimbRepo.findById(id);
-		return foundReimb;
-	}
-	
-	public Page<Reimbursement> findByStatusId(Optional<Integer> pageNum, int statusId) {
-		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
-		return this.reimbRepo.findByStatusId(page, statusId);
-	}
-	
-	private int[] parseDate(String date) throws Exception {
+	private int[] parseDate(String date) throws DateTimeException {
 		int dateInfo[] = new int[3];
 		String[] toConvert = date.split("-");
-		if (toConvert.length != 3) throw new Exception("Malformed date");
+		if (toConvert.length != 3) throw new DateTimeException("Malformed date");
 		int index = 0;
 		for (String s: toConvert) {
 			dateInfo[index++] = Integer.valueOf(s);
@@ -40,19 +32,35 @@ public class ReimbursementService {
 		return dateInfo;
 	}
 	
-	public Page<Reimbursement> findByStatusIdAndDateSubmitted(Optional<Integer> pageNum,
-			int statusId, String startDate, String endDate) throws Exception {
-		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
-		int[] startDateInfo = parseDate(startDate);
-		int[] endDateInfo = parseDate(endDate);
-		LocalDate from = LocalDate.of(startDateInfo[0], startDateInfo[1], startDateInfo[2]);
-		LocalDate to = LocalDate.of(endDateInfo[0], endDateInfo[1], endDateInfo[2]);
-		return this.reimbRepo.findByStatusIdAndDateSubmittedBetween(statusId, from, to, page);
+	public Optional<Reimbursement> findById(int id) {
+		Optional<Reimbursement> foundReimb = this.reimbRepo.findById(id);
+		return foundReimb;
 	}
 	
-	public Page<Reimbursement> findByAuthorId(Optional<Integer> pageNum, int authorId) {
+	public Page<Reimbursement> findByStatusId(Optional<Integer> pageNum, int statusId,
+			Optional<String> startDate, Optional<String> endDate) throws DateTimeException {
 		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
-		return this.reimbRepo.findByAuthorId(page, authorId);
+		if (startDate.isPresent() && endDate.isPresent()) {
+			int[] startDateInfo = parseDate(startDate.get());
+			int[] endDateInfo = parseDate(endDate.get());
+			LocalDate from = LocalDate.of(startDateInfo[0], startDateInfo[1], startDateInfo[2]);
+			LocalDate to = LocalDate.of(endDateInfo[0], endDateInfo[1], endDateInfo[2]);
+			return this.reimbRepo.findByStatusIdAndDateSubmittedBetween(statusId, from, to, page);
+		}
+		return this.reimbRepo.findByStatusId(page, statusId);
+	}
+	
+	public Page<Reimbursement> findByAuthorId(Optional<Integer> pageNum, int statusId,
+			Optional<String> startDate, Optional<String> endDate) throws DateTimeException {
+		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
+		if (startDate.isPresent() && endDate.isPresent()) {
+			int[] startDateInfo = parseDate(startDate.get());
+			int[] endDateInfo = parseDate(endDate.get());
+			LocalDate from = LocalDate.of(startDateInfo[0], startDateInfo[1], startDateInfo[2]);
+			LocalDate to = LocalDate.of(endDateInfo[0], endDateInfo[1], endDateInfo[2]);
+			return this.reimbRepo.findByAuthorIdAndDateSubmittedBetween(statusId, from, to, page);
+		}
+		return this.reimbRepo.findByAuthorId(page, statusId);
 	}
 	
 	public void saveReimbursement(Reimbursement reimb) {

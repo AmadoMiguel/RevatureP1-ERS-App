@@ -3,18 +3,13 @@ package com.ers.util;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.ers.models.UserInfo;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,12 +26,11 @@ public class JWTUtil {
 		return extractClaim(token, Claims::getSubject);
 	}
 	
-	public ArrayList<String> extractRoles(String token) {
-		return (ArrayList<String>) extractClaim(token, new Function<Claims, ArrayList<String>>() {
-			@SuppressWarnings("unchecked")
+	public String extractRole(String token) {
+		return (String) extractClaim(token, new Function<Claims, String>() {
 			@Override
-			public ArrayList<String> apply(Claims t) {
-				return t.get("roles", ArrayList.class);
+			public String apply(Claims t) {
+				return t.get("role", String.class);
 			}
 		});
 	}
@@ -67,7 +61,7 @@ public class JWTUtil {
 			authorities.add(auth.getAuthority());
 		}
 //		For the purpose of this project, each user has only one role
-		claims.put("roles", authorities.get(0));
+		claims.put("role", authorities.get(0));
 		return createToken(claims, userInfo.getUsername());
 	}
 	
