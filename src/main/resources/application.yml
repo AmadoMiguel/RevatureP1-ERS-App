@@ -21,4 +21,4 @@ spring:
     show-sql: true
 server:
   port:
-    5000
+    8080
