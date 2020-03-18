@@ -1,0 +1,9 @@
+version: 0.1
+
+phases:
+  install:
+    commands:
+      - mvn clean install
+  build:
+    commands:
+      - mvn build
