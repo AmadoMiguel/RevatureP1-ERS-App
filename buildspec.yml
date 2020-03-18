@@ -1,9 +1,17 @@
-version: 0.1
+version: 0.2
 
 phases:
   install:
-    commands:
-      - mvn clean install
+    runtime-versions:
+      java: corretto8
   build:
     commands:
-      - mvn build
+      - mvn test 
+  post_build:
+    commands:
+      - mvn package
+artifacts:
+  files:
+    - target/ers-api-1.0-SNAPSHOT.jar
+    - appspec.yml
+  discard-paths: yes
