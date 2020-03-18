@@ -7,13 +7,13 @@ phases:
   build:
     commands:
       - echo Build started
-      - mvn test
+      - mvn install
   post_build:
     commands:
       - echo Packaging
       - mvn package
 artifacts:
   files:
-    - target/ers-api-1.0-SNAPSHOT.jar
+    - target/*.jar
     - appspec.yml
   discard-paths: yes
