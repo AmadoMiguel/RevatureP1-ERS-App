@@ -1,17 +1,17 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      java: corretto8
+  pre_build:
+    commands:
+      - mvn clean install
   build:
     commands:
       - echo "Build started"
-      - mvn clean install
+      - mvn package
   post_build:
     commands:
-      - echo "Packaging..."
-      - mvn package
+      - echo "Finishing build..."
+      - mv target/ERSProject-0.0.1-SNAPSHOT.jar ./
 artifacts:
   files:
-    - target/ERSProject-0.0.1-SNAPSHOT.jar
+    - ./ERSProject-0.0.1-SNAPSHOT.jar
