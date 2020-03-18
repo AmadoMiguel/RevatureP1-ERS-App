@@ -6,9 +6,11 @@ phases:
       java: corretto8
   build:
     commands:
+      - echo Build started
       - mvn test 
   post_build:
     commands:
+      - echo Packaging
       - mvn package
 artifacts:
   files:
