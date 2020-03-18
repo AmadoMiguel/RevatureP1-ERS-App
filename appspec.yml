@@ -1,5 +1,5 @@
 version: 0.2
 os: linux
 files:
-  - source: ./ers-api-1.0-SNAPSHOT.jar
-    destination: /tmp
+  - source: target/ers-api-1.0-SNAPSHOT.jar
+  - destination: /tmp

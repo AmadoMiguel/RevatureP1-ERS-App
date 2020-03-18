@@ -15,4 +15,5 @@ phases:
 artifacts:
   files:
     - target/ers-api-1.0-SNAPSHOT.jar
+    - appspec.yml
   discard-paths: yes
