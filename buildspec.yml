@@ -6,14 +6,12 @@ phases:
       java: corretto8
   build:
     commands:
-      - echo Build started
-      - mvn install
+      - echo "Build started"
+      - mvn clean install
   post_build:
     commands:
-      - echo Packaging
+      - echo "Packaging..."
       - mvn package
 artifacts:
   files:
-    - target/*.jar
-    - appspec.yml
-  discard-paths: yes
+    - target/ERSProject-0.0.1-SNAPSHOT.jar
