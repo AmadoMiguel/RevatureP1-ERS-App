@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.ers.ERSProject.ErsProjectApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 29.905 s - in com.ers.ERSProject.ErsProjectApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.489 s - in com.ers.ERSProject.ErsProjectApplicationTests
