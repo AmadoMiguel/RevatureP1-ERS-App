@@ -1,7 +1,6 @@
 package com.ers.controllers;
 
 import java.time.DateTimeException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +50,10 @@ public class ReimbursementController {
 			@PathVariable int statusId,
 			@RequestParam("page") Optional<Integer> pageNum,
 			@RequestParam("startDate") Optional<String> submittedStart,
-			@RequestParam("endDate") Optional<String> submittedEnd) {
+			@RequestParam("endDate") Optional<String> submittedEnd,
+			@RequestParam("sortBy") Optional<String[]> sortBy) {
 		try {
-			return this.reimbService.findByStatusId(pageNum, statusId, submittedStart, submittedEnd);
+			return this.reimbService.findByStatusId(pageNum, statusId, submittedStart, submittedEnd, sortBy);
 		} catch (DateTimeException e) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -65,7 +65,8 @@ public class ReimbursementController {
 			@RequestHeader("Authorization") Optional<String> jwt,
 			@RequestParam("page") Optional<Integer> pageNum,
 			@RequestParam("startDate") Optional<String> from,
-			@RequestParam("endDate") Optional<String> to) {
+			@RequestParam("endDate") Optional<String> to,
+			@RequestParam("sortBy") Optional<String[]> sortBy) {
 		if (jwt.isPresent()) {
 			String jwtContent = jwt.get();
 			String username = this.jwtUtil.extractUsername(jwtContent);
@@ -75,7 +76,7 @@ public class ReimbursementController {
 //				information
 				if (currUser.get().getId() == authorId) {
 					try {
-						return this.reimbService.findByAuthorId(pageNum, authorId, from, to);
+						return this.reimbService.findByAuthorId(pageNum, authorId, from, to, sortBy);
 					} catch (DateTimeException e) {
 						throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
 					}
@@ -84,7 +85,7 @@ public class ReimbursementController {
 					String role = this.jwtUtil.extractRole(jwtContent);
 					if (role.equals("finance")) {
 						try {
-							return this.reimbService.findByAuthorId(pageNum, authorId, from, to);
+							return this.reimbService.findByAuthorId(pageNum, authorId, from, to, sortBy);
 						} catch (DateTimeException e) {
 							throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
 						}

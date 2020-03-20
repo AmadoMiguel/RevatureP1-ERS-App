@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ers.exceptions.ReimbursementNotFoundException;
@@ -38,8 +39,8 @@ public class ReimbursementService {
 	}
 	
 	public Page<Reimbursement> findByStatusId(Optional<Integer> pageNum, int statusId,
-			Optional<String> startDate, Optional<String> endDate) throws DateTimeException {
-		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
+			Optional<String> startDate, Optional<String> endDate, Optional<String[]> sortBy) throws DateTimeException {
+		Pageable page = PageRequest.of(pageNum.orElse(0), 5, Sort.by(sortBy.orElse(new String[] {"id"})));
 		if (startDate.isPresent() && endDate.isPresent()) {
 			int[] startDateInfo = parseDate(startDate.get());
 			int[] endDateInfo = parseDate(endDate.get());
@@ -51,8 +52,8 @@ public class ReimbursementService {
 	}
 	
 	public Page<Reimbursement> findByAuthorId(Optional<Integer> pageNum, int statusId,
-			Optional<String> startDate, Optional<String> endDate) throws DateTimeException {
-		Pageable page = PageRequest.of(pageNum.orElse(0), 5);
+			Optional<String> startDate, Optional<String> endDate, Optional<String[]> sortBy) throws DateTimeException {
+		Pageable page = PageRequest.of(pageNum.orElse(0), 5, Sort.by(sortBy.orElse(new String[] {"id"})));
 		if (startDate.isPresent() && endDate.isPresent()) {
 			int[] startDateInfo = parseDate(startDate.get());
 			int[] endDateInfo = parseDate(endDate.get());
