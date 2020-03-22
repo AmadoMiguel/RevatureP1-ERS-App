@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -42,17 +41,7 @@ public class UserService implements UserDetailsService {
 			Optional<String> lastNameLike,
 			Optional<String> emailLike,
 			Optional<String> usernameLike) {
-		Pageable pageable = PageRequest.of(page.orElse(0), 5);
-		if (sortOrders.isPresent()) {
-			List<Order> orderByOptions = new ArrayList<Order>();
-			for (String ord: sortOrders.get()) {
-				orderByOptions.add(Order.by(ord));
-			}
-			if (!orderByOptions.isEmpty()) {
-				Sort sortOption = Sort.by(orderByOptions);
-				pageable = PageRequest.of(page.orElse(0), 5, sortOption);
-			}
-		}
+		Pageable pageable = PageRequest.of(page.orElse(0), 5, Sort.by(sortOrders.orElse(new String[]{"id"})));
 //		Handle each filtering option to call specific query. For now, the only combined parameters to
 //		filter at the same time will be first name and last name
 		if (firstNameLike.isPresent() && lastNameLike.isPresent())

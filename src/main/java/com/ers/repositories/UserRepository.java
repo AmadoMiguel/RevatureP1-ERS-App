@@ -26,11 +26,11 @@ public interface UserRepository extends JpaRepository<UserInfo, Integer> {
 	@Query(value = "select * from ers.users where ers.users.first_name like ?1 and ers.users.last_name like ?2",
 			nativeQuery = true)
 	Page<UserInfo> usersWithFirstNameAndLastNameLike(
-			String firstNameMatcher, String lastNameMatcher, Pageable pageable);
+			String firstName, String lastName, Pageable pageable);
 	
 	@Query(value = "select * from ers.users where ers.users.email like ?1", nativeQuery = true)
-	Page<UserInfo> usersWithEmailLike(String emailMatcher, Pageable pageable);
+	Page<UserInfo> usersWithEmailLike(String email, Pageable pageable);
 	
 	@Query(value = "select * from ers.users where ers.users.username like ?1", nativeQuery = true)
-	Page<UserInfo> usersWithUsernameLike(String usernameMatcher, Pageable pageable);
+	Page<UserInfo> usersWithUsernameLike(String username, Pageable pageable);
 }
