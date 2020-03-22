@@ -43,8 +43,6 @@ public class ReimbursementController {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
-//	TODO: apply sorting for both get requests
-	
 	@GetMapping("/status/{statusId}")
 	public Page<Reimbursement> getReimbursementsByStatusId(
 			@PathVariable int statusId,
