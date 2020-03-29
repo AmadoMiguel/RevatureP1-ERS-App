@@ -2,10 +2,9 @@ package com.ers;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-// TODO: add feature to the project which consists in creating an info update request from the user
-// perspective that admins will see and approve/reject, which leads to modify or not the user
-// information
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class ErsProjectApplication {
