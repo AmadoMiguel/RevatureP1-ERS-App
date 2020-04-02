@@ -1,6 +1,7 @@
 package com.ers.security;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,11 +71,15 @@ public class ERSSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-    CorsConfigurationSource corsConfigurationSource() 
+    public CorsConfigurationSource corsConfigurationSource() 
     {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+        configuration.setAllowedOrigins(Collections.unmodifiableList(Arrays.asList("*")));
+        configuration.setAllowedMethods(
+        		Collections.unmodifiableList(Arrays.asList("HEAD", "GET", "POST", "PUT", "PATCH", "DELETE")));
+        configuration.setAllowedHeaders(
+        		Collections.unmodifiableList(Arrays.asList("Authorization", "Cache-Control", "Content-Type")));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

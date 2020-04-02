@@ -65,7 +65,7 @@ public class UserController {
 		return this.userService.getAllUsers(page, sortOrders, firstNameLike, lastNameLike, emailLike, usernameLike);
 	}
 	
-	@GetMapping("/info/{id}")
+	@GetMapping("/id/{id}")
 	public UserInfo requestUserInformation(@PathVariable int id,
 			@RequestHeader("Authorization") Optional<String> jwt) {
 //		Check that current user asks for his/her info. Other users info is not visible
@@ -88,6 +88,22 @@ public class UserController {
 				} else throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Unauthorized.");
 			} else throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Current User not found in the system");
 		} else throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Please include authorization header");
+	}
+	
+	@GetMapping("/username/{username}")
+	public UserInfo findUserByUsername(@PathVariable String username,
+			@RequestHeader("Authorization") Optional<String> jwt) {
+		if (jwt.isPresent()) {
+			String requester = this.jwtUtil.extractUsername(jwt.get());
+			if (requester.equals(username)) {
+				Optional<UserInfo> possibleUser = this.userService.findUserByUsername(username);
+				if (possibleUser.isPresent())
+					return possibleUser.get();
+				throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Username not found in the system");
+			}
+			throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "Not authorized to this information");
+		}
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Please include authorization header");
 	}
 	
 	@PostMapping("/login")
