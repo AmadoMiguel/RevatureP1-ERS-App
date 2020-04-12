@@ -99,11 +99,11 @@ public class UserService implements UserDetailsService {
 //		Check that email and username are not in the database
 		Optional<UserInfo> otherUser = findUserByEmail(newUser.getEmail());
 		if (otherUser.isPresent()) {
-			throw new EmailInUseException("Email already in use.");
+			throw new EmailInUseException("Email already in use");
 		}
 		otherUser = this.findUserByUsername(newUser.getUsername());
 		if (otherUser.isPresent()) {
-			throw new UsernameInUseException("Username already in use.");
+			throw new UsernameInUseException("Username already in use");
 		}
 		return this.userRepository.save(newUser);
 	}

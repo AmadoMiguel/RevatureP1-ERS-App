@@ -6,6 +6,7 @@ public class EmailInUseException extends Exception {
 	private String message;
 	
 	public EmailInUseException(String message) {
+		super(message);
 		this.message = message;
 	}
 

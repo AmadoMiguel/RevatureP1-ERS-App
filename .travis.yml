@@ -1,0 +1,9 @@
+language: java
+jobs:
+  include:
+    - stage: build
+      script:
+        - mvn clean package
+    - stage: test
+      script:
+        - mvn test --quiet

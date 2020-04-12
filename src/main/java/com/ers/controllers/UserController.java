@@ -112,11 +112,11 @@ public class UserController {
 				.loadUserByUsername(userCredentials.getUsername());
 		if (userInfo == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-					"Username not found.");
+					"Username not found");
 		}
 		if (! passEncoder.matches(userCredentials.getPassword(), userInfo.getPassword())) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-					"Incorrect Password.");
+					"Incorrect Password");
 		}
 		ArrayList<String> authorities = new ArrayList<String>();
 		for (GrantedAuthority auth : userInfo.getAuthorities()) {
@@ -133,12 +133,12 @@ public class UserController {
 //			Hash password before storing user
 			newUser.setPassword(passEncoder.encode(newUser.getPassword()));
 			this.userService.registerUser(newUser);
-		} catch (EmailInUseException e) {
+		} catch (EmailInUseException e1) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-					e.getMessage());
-		} catch (UsernameInUseException e) {
+					e1.getMessage());
+		} catch (UsernameInUseException e2) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-					e.getMessage());
+					e2.getMessage());
 		}
 		return new HttpEntity<String>(HttpStatus.CREATED.toString());
 	}
@@ -213,6 +213,6 @@ public class UserController {
 //	Controller-level exception handler
 	@ExceptionHandler
 	public ResponseEntity<String> errorHandler(HttpClientErrorException ex) {
-		return ResponseEntity.status(ex.getStatusCode()).body(ex.getMessage());
+		return new ResponseEntity<String>(ex.getMessage(), ex.getStatusCode());
 	}
 }
