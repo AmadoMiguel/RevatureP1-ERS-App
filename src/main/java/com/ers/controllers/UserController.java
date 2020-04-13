@@ -106,17 +106,12 @@ public class UserController {
 		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Please include authorization header");
 	}
 	
-	@PostMapping("/login")
-	public ResponseEntity<ClientInfo> loginUser(@RequestBody UserCredentials userCredentials) {
-		UserDetails userInfo = this.userService
-				.loadUserByUsername(userCredentials.getUsername());
+	@PostMapping("/login/username/{username}")
+	public ResponseEntity<ClientInfo> loginUser(@PathVariable String username) {
+		UserDetails userInfo = this.userService.loadUserByUsername(username);
 		if (userInfo == null) {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
 					"Username not found");
-		}
-		if (! passEncoder.matches(userCredentials.getPassword(), userInfo.getPassword())) {
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-					"Incorrect Password");
 		}
 		ArrayList<String> authorities = new ArrayList<String>();
 		for (GrantedAuthority auth : userInfo.getAuthorities()) {
@@ -125,6 +120,24 @@ public class UserController {
 		final String jwt = jwtUtil.generateToken(userInfo);
 		ClientInfo info = new ClientInfo(userInfo.getUsername(), authorities.get(0), jwt);
 		return ResponseEntity.ok(info);
+	}
+	
+	@PostMapping("/login/password/{password}")
+	public ResponseEntity<String> loginPassword(@PathVariable String password,
+			@RequestHeader("Authorization") Optional<String> jwt) {
+		if (jwt.isPresent()) {
+			String username = this.jwtUtil.extractUsername(jwt.get());
+			UserDetails userInfo = this.userService.loadUserByUsername(username);
+			if (userInfo == null)
+				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+						"Authentication user not found");
+			if (this.passEncoder.matches(password, userInfo.getPassword()))
+				return new ResponseEntity<String>("Accepted", HttpStatus.ACCEPTED);
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+					"Incorrect password");
+		}
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Please include Authorization header");
 	}
 	
 	@PostMapping("/register")
@@ -164,24 +177,28 @@ public class UserController {
 //	before updating it.
 	@PatchMapping("/update/password")
 	public HttpEntity<String> changePassword(@RequestBody UserPasswords passwords,
-			@RequestHeader("Authorization") String jwt) {
-		String username = this.jwtUtil.extractUsername(jwt);
-		Optional<UserInfo> currentUser = this.userService.findUserByUsername(username);
-		if (currentUser.isPresent()) {
-//			Check passwords
-			if (!passEncoder.matches(passwords.getOldPassword(), currentUser.get().getPassword())) {
-				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-						"Incorrect password provided.");
+			@RequestHeader("Authorization") Optional<String> jwt) {
+		if (jwt.isPresent()) {
+			String username = this.jwtUtil.extractUsername(jwt.get());
+			Optional<UserInfo> currentUser = this.userService.findUserByUsername(username);
+			if (currentUser.isPresent()) {
+//				Check passwords
+				if (!passEncoder.matches(passwords.getOldPassword(), currentUser.get().getPassword())) {
+					throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+							"Incorrect password provided");
+				}
+//				Hash new password and save user
+				UserInfo updatedUser = currentUser.get();
+				updatedUser.setPassword(passEncoder.encode(passwords.getNewPassword()));
+				this.userService.updatePassword(updatedUser);
+				return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
+			} else {
+				throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
+						"Username not found.");
 			}
-//			Hash new password and save user
-			UserInfo updatedUser = currentUser.get();
-			updatedUser.setPassword(passEncoder.encode(passwords.getNewPassword()));
-			this.userService.updatePassword(updatedUser);
-			return new HttpEntity<String>(HttpStatus.ACCEPTED.toString());
-		} else {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-					"Username not found.");
 		}
+		throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+				"Please include Authentication header");
 	}
 	
 	@DeleteMapping("/{id}")
