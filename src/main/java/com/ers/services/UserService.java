@@ -31,8 +31,7 @@ public class UserService implements UserDetailsService {
 		this.userRepository = userRepository;
 	}
 	
-//	Send paginated users information. Default value of 5 users per page.
-//	Default page value: 5.
+//	Send paginated users information. Default page value: 6.
 //	Users can be retrieved with/without filters on their properties
 	public Page<UserInfo> getAllUsers(
 			Optional<Integer> page,
@@ -41,7 +40,7 @@ public class UserService implements UserDetailsService {
 			Optional<String> lastNameLike,
 			Optional<String> emailLike,
 			Optional<String> usernameLike) {
-		Pageable pageable = PageRequest.of(page.orElse(0), 5, Sort.by(sortOrders.orElse(new String[]{"id"})));
+		Pageable pageable = PageRequest.of(page.orElse(0), 6, Sort.by(sortOrders.orElse(new String[]{"id"})));
 //		Handle each filtering option to call specific query. For now, the only combined parameters to
 //		filter at the same time will be first name and last name
 		if (firstNameLike.isPresent() && lastNameLike.isPresent())
@@ -112,34 +111,28 @@ public class UserService implements UserDetailsService {
 	EmailInUseException, UsernameInUseException {
 		try {
 			UserInfo userToUpdate = getUserById(newUserInfo.getId());
-//			Check if the new email in the updated user info is not in use
-			Optional<UserInfo> userWithSameEmail = findUserByEmail(newUserInfo.getEmail());
-			if (userWithSameEmail.isPresent()) {
-				throw new EmailInUseException("Email already in use.");
+			if (!userToUpdate.getEmail().equals(newUserInfo.getEmail())) {
+//				Check if the new email in the updated user info is not in use
+				Optional<UserInfo> userWithSameEmail = findUserByEmail(newUserInfo.getEmail());
+				if (userWithSameEmail.isPresent()) {
+					throw new EmailInUseException("Email already in use.");
+				}
 			}
-//			Check if the new username in the updated user info is not in use
-			Optional<UserInfo> userWithSameUsername = 
-					this.findUserByUsername(newUserInfo.getUsername());
-			if (userWithSameUsername.isPresent()) {
-				throw new UsernameInUseException("Username already in use.");
+			if (!userToUpdate.getUsername().equals(newUserInfo.getUsername())) {
+//				Check if the new username in the updated user info is not in use
+				Optional<UserInfo> userWithSameUsername = 
+						this.findUserByUsername(newUserInfo.getUsername());
+				if (userWithSameUsername.isPresent()) {
+					throw new UsernameInUseException("Username already in use.");
+				}
 			}
 //			Compare fields and udpate where not null
-			if (newUserInfo.getFirstName() != null) {
-				userToUpdate.setFirstName(newUserInfo.getFirstName());
-			}
-			if (newUserInfo.getLastName() != null) {
-				userToUpdate.setLastName(newUserInfo.getLastName());
-			}
-			if (newUserInfo.getUsername() != null) {
-				userToUpdate.setUsername(newUserInfo.getUsername());
-			}
-			if (newUserInfo.getEmail() != null) {
-				userToUpdate.setEmail(newUserInfo.getEmail());
-			}
-			if (newUserInfo.getRole() != null) {
-				userToUpdate.setRole(newUserInfo.getRole());
-			}
-			return this.userRepository.save(userToUpdate);
+			if (newUserInfo.getFirstName() != null) userToUpdate.setFirstName(newUserInfo.getFirstName());
+			if (newUserInfo.getLastName() != null) userToUpdate.setLastName(newUserInfo.getLastName());
+			if (newUserInfo.getUsername() != null) userToUpdate.setUsername(newUserInfo.getUsername());
+			if (newUserInfo.getEmail() != null) userToUpdate.setEmail(newUserInfo.getEmail());
+			if (newUserInfo.getRole() != null) userToUpdate.setRole(newUserInfo.getRole());
+			return this.userRepository.saveAndFlush(userToUpdate);
 		} catch(UserNotFoundException e) {
 			throw e;
 		}
