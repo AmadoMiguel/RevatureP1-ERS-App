@@ -29,6 +29,7 @@ import com.ers.exceptions.UserNotFoundException;
 import com.ers.exceptions.UsernameInUseException;
 import com.ers.models.ClientInfo;
 import com.ers.models.PassEncoder;
+import com.ers.models.Role;
 import com.ers.models.UserCredentials;
 import com.ers.models.UserInfo;
 import com.ers.models.UserPasswords;
@@ -61,8 +62,10 @@ public class UserController {
 			@RequestParam("firstName") Optional<String> firstNameLike,
 			@RequestParam("lastName") Optional<String> lastNameLike,
 			@RequestParam("email") Optional<String> emailLike,
-			@RequestParam("username") Optional<String> usernameLike) {
-		return this.userService.getAllUsers(page, sortOrders, firstNameLike, lastNameLike, emailLike, usernameLike);
+			@RequestParam("username") Optional<String> usernameLike,
+			@RequestParam("role") Optional<Integer> roleId) {
+		return this.userService.getAllUsers(page, sortOrders,
+				firstNameLike, lastNameLike, emailLike, usernameLike, roleId);
 	}
 	
 	@GetMapping("/id/{id}")

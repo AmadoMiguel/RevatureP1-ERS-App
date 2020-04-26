@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +23,9 @@ import org.springframework.stereotype.Service;
 import com.ers.exceptions.EmailInUseException;
 import com.ers.exceptions.UserNotFoundException;
 import com.ers.exceptions.UsernameInUseException;
+import com.ers.models.Role;
 import com.ers.models.UserInfo;
+import com.ers.repositories.RoleRepository;
 import com.ers.repositories.UserRepository;
 
 @Service
@@ -31,6 +37,9 @@ public class UserService implements UserDetailsService {
 		this.userRepository = userRepository;
 	}
 	
+	@Autowired
+	private RoleRepository roleRepository;
+	
 //	Send paginated users information. Default page value: 6.
 //	Users can be retrieved with/without filters on their properties
 	public Page<UserInfo> getAllUsers(
@@ -39,24 +48,31 @@ public class UserService implements UserDetailsService {
 			Optional<String> firstNameLike,
 			Optional<String> lastNameLike,
 			Optional<String> emailLike,
-			Optional<String> usernameLike) {
+			Optional<String> usernameLike,
+			Optional<Integer> roleId) {
 		Pageable pageable = PageRequest.of(page.orElse(0), 6, Sort.by(sortOrders.orElse(new String[]{"id"})));
-//		Handle each filtering option to call specific query. For now, the only combined parameters to
-//		filter at the same time will be first name and last name
-		if (firstNameLike.isPresent() && lastNameLike.isPresent())
-			return this.userRepository.usersWithFirstNameAndLastNameLike(
-					firstNameLike.get(), lastNameLike.get(), pageable);
-		if (firstNameLike.isPresent())
-			return this.userRepository.usersWithFirstNameLike(firstNameLike.get(), pageable);
-		if (lastNameLike.isPresent())
-			return this.userRepository.usersWithLastNameLike(lastNameLike.get(), pageable);
-		if (emailLike.isPresent())
-			return this.userRepository.usersWithEmailLike(emailLike.get(), pageable);
-		if (usernameLike.isPresent())
-			return this.userRepository.usersWithUsernameLike(usernameLike.get(), pageable);
-		
-//		Default query without filtering applied
-		return this.userRepository.findAll(pageable);
+		UserInfo u = new UserInfo();
+		ExampleMatcher m = ExampleMatcher.matchingAll().withIgnoreNullValues().withIgnorePaths("id")
+				.withStringMatcher(StringMatcher.CONTAINING);
+//		Handle each filtering option to call specific query
+		if (firstNameLike.isPresent() && !firstNameLike.get().equals("")) {
+			u.setFirstName(firstNameLike.get());
+		}
+		if (lastNameLike.isPresent() && !lastNameLike.get().equals("")) {
+			u.setLastName(lastNameLike.get());
+		}
+		if (emailLike.isPresent() && !emailLike.get().equals("")) { 
+			u.setEmail(emailLike.get());
+		}
+		if (usernameLike.isPresent() && !usernameLike.get().equals("")) {
+			u.setUsername(usernameLike.get());
+		}
+		if (roleId.isPresent()) {
+			Optional<Role> role = this.roleRepository.findById(roleId.get());
+			if (role.isPresent())
+				u.setRole(role.get());
+		}
+		return this.userRepository.findAll(Example.of(u, m), pageable);
 	}
 	
 //	Get user details for authentication. This method is called by the security configure class
