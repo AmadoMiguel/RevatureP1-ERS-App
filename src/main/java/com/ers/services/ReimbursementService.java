@@ -41,7 +41,7 @@ public class ReimbursementService {
 	public Page<Reimbursement> findByStatusId(Optional<Integer> pageNum, int statusId,
 			Optional<String> startDate, Optional<String> endDate, Optional<String[]> sortBy) throws DateTimeException {
 		Pageable page = PageRequest.of(pageNum.orElse(0), 5, Sort.by(sortBy.orElse(new String[] {"id"})));
-		if (startDate.isPresent() && endDate.isPresent()) {
+		if (startDate.isPresent() && !startDate.get().equals("") && endDate.isPresent() && !endDate.get().equals("")) {
 			int[] startDateInfo = parseDate(startDate.get());
 			int[] endDateInfo = parseDate(endDate.get());
 			LocalDate from = LocalDate.of(startDateInfo[0], startDateInfo[1], startDateInfo[2]);
@@ -54,7 +54,7 @@ public class ReimbursementService {
 	public Page<Reimbursement> findByAuthorId(Optional<Integer> pageNum, int statusId,
 			Optional<String> startDate, Optional<String> endDate, Optional<String[]> sortBy) throws DateTimeException {
 		Pageable page = PageRequest.of(pageNum.orElse(0), 5, Sort.by(sortBy.orElse(new String[] {"id"})));
-		if (startDate.isPresent() && endDate.isPresent()) {
+		if (startDate.isPresent() && !startDate.get().equals("") && endDate.isPresent() && !endDate.get().equals("")) {
 			int[] startDateInfo = parseDate(startDate.get());
 			int[] endDateInfo = parseDate(endDate.get());
 			LocalDate from = LocalDate.of(startDateInfo[0], startDateInfo[1], startDateInfo[2]);
